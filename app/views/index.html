@@ -60,6 +60,7 @@
         }
     </style>
     <script src="/socket.io/socket.io.js"></script>
+    <script src="libraries/matter.js"></script>
 </head>
 
 <body>
@@ -68,20 +69,7 @@
         <input id="input" autocomplete="off" /><button>Send</button>
     </form>
 
-    <script>
-        var socket = io();
-
-        var form = document.getElementById('form');
-        var input = document.getElementById('input');
-
-        form.addEventListener('submit', function (e) {
-            e.preventDefault();
-            if (input.value) {
-                socket.emit('chat message', input.value);
-                input.value = '';
-            }
-        });
-    </script>
+    <script src="index.js"></script>
 </body>
 
 </html>
