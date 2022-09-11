@@ -77,7 +77,6 @@ function loop(time) {
 
     var boxA = engine.world.bodies.find(x => x.id == gameState.boxes[0].id);
     if (keys["ArrowRight"] || keys["d"]) {
-        console.log("right");
         Body.setVelocity(boxA, { x: 3, y: 0 });
     }
     if (keys["a"]) {
