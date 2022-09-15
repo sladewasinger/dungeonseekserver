@@ -49,6 +49,7 @@ let gameState = { boxes: [] };
 socket.on('gameState', function (gs) {
     try {
         gameState = gs;
+        console.log(gameState.boxes.length);
         for (var box of gameState.boxes) {
             if (!engine.world.bodies.find(x => x.id === box.id)) {
                 var body = Bodies.rectangle(box.position.x, box.position.y, box.width, box.height, { ...box.options, id: box.id });

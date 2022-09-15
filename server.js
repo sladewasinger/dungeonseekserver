@@ -63,6 +63,11 @@ let keys = {};
 io.on('connection', (socket) => {
     console.log('user connected');
 
+    var box = new Rectangle(300, 200, 60, 60);
+    boxes.push(box);
+    Composite.add(engine.world, box.body);
+    console.log("BOX ADDED");
+
     socket.on('disconnect', () => {
         console.log('user disconnected');
     });
