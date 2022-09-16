@@ -46,7 +46,7 @@ jobs:
         run: |
           npm install
           npm install @vue/cli
-          cd vue-app/dungeonseek && npm run build
+          cd vue-app/dungeonseek && npm install && npm run build
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
