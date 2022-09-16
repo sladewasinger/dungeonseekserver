@@ -30,7 +30,7 @@ jobs:
         run: |
           mkdir dist
           mkdir -p dist/vue-app/dungeonseek/dist/
-          cp -r vue-app/dungeonseek/dist/ dist/vue-app/dungeonseek/dist/
+          cp -r vue-app/dungeonseek/dist/ dist/vue-app/dungeonseek/
           cp server.js dist/
           cp -r node_modules dist/
           cp package.json dist/
