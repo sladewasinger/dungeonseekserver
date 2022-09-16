@@ -45,7 +45,7 @@ jobs:
       - name: npm install, build, and test
         run: |
           npm install
-          cd vue-app\dungeonseek && npm run build
+          cd vue-app/dungeonseek && npm run build
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
