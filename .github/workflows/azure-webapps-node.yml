@@ -75,7 +75,7 @@ jobs:
         with:
           name: node-app
 
-      - name: "Deploy to Azure WebApp"
+      - name: "Deploy to Azure WebApp Dungeonseek"
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
         with:
