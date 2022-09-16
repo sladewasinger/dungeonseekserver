@@ -26,11 +26,18 @@ jobs:
           npm install
           cd vue-app/dungeonseek && npm install && npm run build
 
+      - name: Copy files to output dir
+        run: |
+          mkdir dist
+          cp -r vue-app/dungeonseek/dist dist/vue-app/
+          cp server.js dist/
+          cp package.json dist/
+
       - name: Upload artifact for deployment job
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: node-app
-          path: .
+          path: dist
 
   deploy:
     runs-on: ubuntu-latest
