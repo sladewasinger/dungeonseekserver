@@ -52,11 +52,15 @@ setInterval(loop, fps);
 
 const app = express();
 const path = __dirname + '/app/views/';
-app.use(express.static(path));
+app.use(express.static(path,));
 
 const server = http.createServer(app);
 const io = new Server(server);
 
+const port = process.env.PORT || 3000;
+server.listen(port, () => {
+    console.log('listening on *:' + port);
+});
 
 let keys = {};
 
@@ -98,9 +102,6 @@ try {
     console.log(error);
 }
 
-server.listen(3000, () => {
-    console.log('listening on *:3000');
-});
 
 function getGameState() {
     return {
