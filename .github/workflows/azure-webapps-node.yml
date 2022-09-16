@@ -58,7 +58,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: node-app
-          path: ./dist
+          path: dist
 
   deploy:
     permissions:
@@ -81,4 +81,4 @@ jobs:
         with:
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          package: ./dist
+          package: dist #${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
