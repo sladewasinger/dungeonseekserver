@@ -12,6 +12,7 @@ phases:
     commands:
       - echo Installing source NPM dependencies...
       - npm install
+      - cd vue-app/dungeonseek && npm install && npm run build
   build:
     commands:
       - echo Build started on `date`
@@ -27,5 +28,4 @@ artifacts:
   files:
     - server.js
     - package.json
-    - app/**/*
-    - node_modules/lodash/*
+    - dist/**/* # This is the Vue app
