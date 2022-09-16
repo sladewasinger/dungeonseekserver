@@ -54,7 +54,6 @@ jobs:
           cp -r vue-app/dungeonseek/dist dist/vue-app/
           cp server.js dist/
           cp package.json dist/
-          cp node_modules/lodash/lodash.min.js dist/node_modules/lodash/
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
