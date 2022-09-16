@@ -28,4 +28,4 @@ artifacts:
   files:
     - server.js
     - package.json
-    - dist/**/* # This is the Vue app
+    - vue-app/dungeonseek/dist/**/* # This is the Vue app
