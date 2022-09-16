@@ -48,11 +48,19 @@ jobs:
           npm install @vue/cli
           cd vue-app/dungeonseek && npm install && npm run build
 
+      - name: Copy files to output dir
+        run: |
+          mkdir dist
+          cp -r vue-app/dungeonseek/dist dist/vue-app/
+          cp server.js dist/
+          cp package.json dist/
+          cp node_modules/lodash/lodash.min.js dist/node_modules/lodash/
+
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
         with:
           name: node-app
-          path: .
+          path: ./dist
 
   deploy:
     permissions:
