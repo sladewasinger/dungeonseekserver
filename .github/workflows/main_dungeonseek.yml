@@ -29,7 +29,7 @@ jobs:
       - name: Copy files to output dir
         run: |
           mkdir dist
-          mkdir dist/vue-app/dungeonseek/dist/
+          mkdir -p dist/vue-app/dungeonseek/dist/
           cp -r vue-app/dungeonseek/dist/ dist/vue-app/dungeonseek/dist/
           cp server.js dist/
           cp -r node_modules dist/
