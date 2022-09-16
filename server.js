@@ -57,7 +57,7 @@ app.use(express.static(path,));
 const server = http.createServer(app);
 const io = new Server(server);
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3000; // Use the port that AWS provides or default to 3000. Without this, the deployment will fail.
 server.listen(port, () => {
     console.log('listening on *:' + port);
 });
