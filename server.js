@@ -52,7 +52,7 @@ setInterval(loop, fps);
 
 const app = express();
 const path = __dirname + '/app/views/';
-app.use(express.static(path,));
+app.use(express.static(path));
 
 const server = http.createServer(app);
 const io = new Server(server);
