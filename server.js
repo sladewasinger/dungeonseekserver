@@ -51,7 +51,7 @@ function loop() {
 setInterval(loop, fps);
 
 const app = express();
-const path = __dirname + '/dist/';
+const path = __dirname + '/vue-app/dungeonseek/dist/';
 app.use(express.static(path));
 
 const server = http.createServer(app);
