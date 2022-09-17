@@ -7,7 +7,13 @@ export class Engine {
     constructor() {
         this.camera = new Camera(0, 0, 2);
         this.matterEngine = new MatterEngine();
-        this.socket = io(); // change this to localhost:3000 when testing locally
+        this.socketUrl = undefined;
+        console.log(process.env);
+        if (process.env.NODE_ENV == 'local') {
+            console.log("Connecting to localhost");
+            this.socketUrl = 'http://localhost:3000';
+        }
+        this.socket = io(this.socketUrl); // change this to localhost:3000 when testing locally
         this.gameState = { boxes: [] };
         this.elapsedTime = 0;
         this.fps = 1000 / 60;
