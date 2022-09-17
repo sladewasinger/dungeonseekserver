@@ -1,5 +1,4 @@
 <template>
-  <canvas id="gameCanvas" width="100" height="100"></canvas>
 </template>
 
 <script>

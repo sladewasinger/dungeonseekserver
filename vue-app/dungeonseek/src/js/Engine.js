@@ -21,8 +21,8 @@ export class Engine {
         this.keys = {};
         this.canvas = document.getElementById('gameCanvas');
 
-        window.addEventListener('resize', e => this.resizeCanvas());
-        window.addEventListener('wheel', e => this.resizeCanvas());
+        // window.addEventListener('resize', e => this.resizeCanvas());
+        // window.addEventListener('wheel', e => this.resizeCanvas());
 
         window.addEventListener('keydown', e => this.keyDown(e));
         window.addEventListener('keyup', e => this.keyUp(e));
@@ -50,13 +50,7 @@ export class Engine {
         this.keys[e.key] = false;
     }
 
-    resizeCanvas() {
-        this.canvas.width = window.innerWidth / this.camera.scale;
-        this.canvas.height = window.innerHeight / this.camera.scale;
-    }
-
     init() {
-        this.resizeCanvas();
         this.startTime = new Date();
         setInterval(this.loop.bind(this), this.fps);
     }
@@ -66,7 +60,6 @@ export class Engine {
         let delta = endTime - this.startTime;
         delta = Math.min(64, Math.max(this.fps, delta));
         this.matterEngine.update(delta, this.gameState, this.keys);
-        console.log("UPDATE GAME STATE RENDERER");
         this.renderer.update(this.gameState);
     }
 }
