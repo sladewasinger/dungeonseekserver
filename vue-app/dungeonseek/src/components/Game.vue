@@ -1,0 +1,27 @@
+<template>
+  <canvas id="gameCanvas" width="100" height="100"></canvas>
+</template>
+
+<script>
+import { init as GameInit } from '../js/Game.js';
+
+export default {
+  name: 'Game',
+  mounted() {
+    GameInit();
+  }
+}
+</script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style scoped>
+#gameCanvas {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  /* pointer-events: none; */
+  image-rendering: pixelated;
+}
+</style>
