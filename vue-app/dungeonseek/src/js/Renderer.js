@@ -30,5 +30,10 @@ export class Renderer {
                 rect.rotation = box.angle;
             }
         }
+        for (var item in this.app.stage.children) {
+            if (!gameState.boxes.find(x => x.id === item.id)) {
+                this.app.stage.removeChild(item);
+            }
+        }
     }
 }

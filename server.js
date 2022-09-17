@@ -26,7 +26,7 @@ class Rectangle {
 
 var boxA = new Rectangle(400, 200, 80, 80);
 var boxB = new Rectangle(450, 50, 80, 80);
-var ground = new Rectangle(400, 610, 810, 60, { isStatic: true });
+var ground = new Rectangle(400, 610, 500, 60, { isStatic: true });
 
 var boxes = [
     boxA,
