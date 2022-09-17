@@ -1,4 +1,4 @@
-var socket = io();
+var socket = io('http://localhost:3000');
 
 var Engine = Matter.Engine,
     Render = Matter.Render,

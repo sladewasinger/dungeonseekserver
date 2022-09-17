@@ -2,6 +2,7 @@ const Matter = require('matter-js');
 const { Server } = require("socket.io");
 const http = require('http');
 const express = require('express');
+const cors = require('cors');
 
 var Engine = Matter.Engine,
     Render = Matter.Render,
@@ -52,14 +53,26 @@ setInterval(loop, fps);
 
 const app = express();
 const path = __dirname + '/vue-app/dungeonseek/dist/';
+app.use(cors({
+    origin: ['*:*', 'http://dungeonseek.azurewebsites.net'],
+}))
+
 app.use(express.static(path));
 
 const server = http.createServer(app);
-const io = new Server(server);
+
 
 const port = process.env.PORT || 3000; // Use the port that AWS provides or default to 3000. Without this, the deployment will fail.
 server.listen(port, () => {
     console.log('listening on *:' + port);
+});
+
+
+const io = new Server(server, {
+    cors: {
+        origin: '*', // Allow all origins
+        methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+    }
 });
 
 let keys = {};
