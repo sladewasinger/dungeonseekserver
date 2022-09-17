@@ -1,6 +1,7 @@
 import { Camera } from './Camera';
 import { MatterEngine } from './MatterEngine';
 import { io } from 'socket.io-client';
+import { Renderer } from './Renderer';
 const createjs = window.createjs;
 
 export class Engine {
@@ -15,7 +16,6 @@ export class Engine {
         }
         this.socket = io(this.socketUrl); // change this to localhost:3000 when testing locally
         this.gameState = { boxes: [] };
-        this.elapsedTime = 0;
         this.fps = 1000 / 60;
 
         this.stage = new createjs.Stage('gameCanvas');
@@ -43,6 +43,7 @@ export class Engine {
             }
         });
 
+        this.renderer = new Renderer();
     }
 
     keyDown(e) {
@@ -62,12 +63,16 @@ export class Engine {
 
     init() {
         this.resizeCanvas();
-        setInterval(() => this.loop, this.fps);
+        this.startTime = new Date();
+        setInterval(this.loop.bind(this), this.fps);
     }
 
-    loop(time) {
-        let delta = time - this.elapsedTime;
+    loop() {
+        const endTime = new Date();
+        let delta = endTime - this.startTime;
         delta = Math.min(64, Math.max(this.fps, delta));
-        this.matterEngine.update(delta, this.keys);
+        this.matterEngine.update(delta, this.gameState, this.keys);
+        console.log("UPDATE GAME STATE RENDERER");
+        this.renderer.update(this.gameState);
     }
 }

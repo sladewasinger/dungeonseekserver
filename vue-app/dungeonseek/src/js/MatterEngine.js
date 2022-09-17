@@ -10,15 +10,6 @@ export class MatterEngine {
     constructor() {
         // create an engine
         this.engine = Engine.create();
-
-        // create a renderer
-        this.render = Render.create({
-            element: document.body,
-            engine: this.engine
-        });
-
-        // run the renderer
-        Render.run(this.render);
     }
 
     onGameStateUpdated(gameState) {
@@ -41,10 +32,10 @@ export class MatterEngine {
         }
     }
 
-    update(delta, keys) {
-        Engine.update(this.matterEngine, delta);
+    update(delta, gameState, keys) {
+        Engine.update(this.engine, delta);
 
-        var boxA = this.matterEngine.world.bodies.find(x => x.id == this.gameState.boxes[0].id);
+        var boxA = this.engine.world.bodies.find(x => x.id == gameState.boxes[0].id);
         if (keys["ArrowRight"] || keys["d"]) {
             Body.setVelocity(boxA, { x: 3, y: 0 });
         }
