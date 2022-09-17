@@ -1,7 +1,7 @@
 const Matter = require('matter-js');
-const { Server } = require("socket.io");
 const http = require('http');
 const express = require('express');
+const { Server } = require("socket.io");
 const cors = require('cors');
 
 var Engine = Matter.Engine,
@@ -61,14 +61,13 @@ app.use(express.static(path));
 
 const server = http.createServer(app);
 
-
 const port = process.env.PORT || 3000; // Use the port that AWS provides or default to 3000. Without this, the deployment will fail.
 server.listen(port, () => {
     console.log('listening on *:' + port);
 });
 
 
-const io = new Server(server, {
+const socketServer = new Server(server, {
     cors: {
         origin: '*', // Allow all origins
         methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
@@ -77,7 +76,7 @@ const io = new Server(server, {
 
 let keys = {};
 
-io.on('connection', (socket) => {
+socketServer.on('connection', (socket) => {
     console.log('user connected');
 
     var box = new Rectangle(300, 200, 60, 60);
@@ -108,7 +107,7 @@ io.on('connection', (socket) => {
 try {
     setInterval(() => {
 
-        io.emit('gameState', getGameState());
+        socketServer.emit('gameState', getGameState());
 
     }, 1000 / 30); // 20 updates per second
 } catch (error) {

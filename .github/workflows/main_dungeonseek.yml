@@ -34,7 +34,6 @@ jobs:
           cp server.js dist/
           cp -r node_modules dist/
           cp package.json dist/
-          tree dist
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3

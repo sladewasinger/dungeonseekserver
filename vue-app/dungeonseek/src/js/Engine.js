@@ -18,14 +18,8 @@ export class Engine {
         this.gameState = { boxes: [] };
         this.fps = 1000 / 60;
 
-        this.stage = new createjs.Stage('gameCanvas');
-        this.stage.snapToPixel = true;
-        this.stage.snapToPixelEnabled = true;
-        this.stage.addChild(this.camera.container);
-
-        const context = this.stage.canvas.getContext('2d');
-        context.imageSmoothingEnabled = false;
         this.keys = {};
+        this.canvas = document.getElementById('gameCanvas');
 
         window.addEventListener('resize', e => this.resizeCanvas());
         window.addEventListener('wheel', e => this.resizeCanvas());
@@ -57,8 +51,8 @@ export class Engine {
     }
 
     resizeCanvas() {
-        this.stage.canvas.width = window.innerWidth / this.camera.scale;
-        this.stage.canvas.height = window.innerHeight / this.camera.scale;
+        this.canvas.width = window.innerWidth / this.camera.scale;
+        this.canvas.height = window.innerHeight / this.camera.scale;
     }
 
     init() {
