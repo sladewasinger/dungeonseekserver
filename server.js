@@ -42,11 +42,19 @@ const fps = 1000 / 60;
 // run the engine
 function loop() {
     Engine.update(engine, fps);
-    if (keys['d']) {
-        Matter.Body.setVelocity(boxA.body, { x: 3, y: boxA.body.velocity.y });
-    }
-    if (keys['a']) {
-        Matter.Body.setVelocity(boxA.body, { x: -3, y: boxA.body.velocity.y });
+    for (const player of players) {
+        const keys = player.keys;
+        const box = player.box;
+        if (keys['d']) {
+            Matter.Body.setVelocity(box.body, { x: 3, y: box.body.velocity.y });
+        }
+        if (keys['a']) {
+            Matter.Body.setVelocity(box.body, { x: -3, y: box.body.velocity.y });
+        }
+
+        if (box.body.position.y > 700) {
+            Matter.Body.setPosition(box.body, { x: 400, y: 0 });
+        }
     }
 }
 setInterval(loop, fps);
@@ -74,18 +82,26 @@ const socketServer = new Server(server, {
     }
 });
 
-let keys = {};
+class Player {
+    constructor(id, box) {
+        this.id = id;
+        this.box = box;
+        this.keys = {};
+    }
+}
+let players = [];
 
 socketServer.on('connection', (socket) => {
-    console.log('user connected');
+    console.log('user connected', socket.id);
 
-    var box = new Rectangle(300, 200, 60, 60);
-    boxes.push(box);
-    Composite.add(engine.world, box.body);
-    console.log("BOX ADDED");
+    const player = new Player(socket.id, new Rectangle(300, 200, 50, 50));
+    players.push(player);
+    Composite.add(engine.world, player.box.body);
 
     socket.on('disconnect', () => {
         console.log('user disconnected');
+        players = players.filter(x => x.id !== socket.id); /* Remove player from list */
+        Composite.remove(engine.world, player.box.body); /* Remove player from world */
     });
 
     socket.on('chat message', (msg) => {
@@ -94,11 +110,13 @@ socketServer.on('connection', (socket) => {
     });
 
     socket.on('keydown', (key) => {
-        keys[key] = true;
+        player.keys[key] = true;
+        // keys[key] = true;
     });
 
     socket.on("keyup", (key) => {
-        keys[key] = false;
+        player.keys[key] = false;
+        // keys[key] = false;
     });
 
     socket.emit('gameState', getGameState());
@@ -117,18 +135,32 @@ try {
 
 function getGameState() {
     return {
-        boxes: boxes.map(x => {
-            return {
-                position: x.body.position,
-                width: x.width,
-                height: x.height,
-                options: x.options,
-                angle: x.body.angle,
-                velocity: x.body.velocity,
-                angularVelocity: x.body.angularVelocity,
-                id: x.body.id,
-                label: x.body.label
-            };
-        })
+        boxes: [
+            ...boxes.map(x => {
+                return {
+                    position: x.body.position,
+                    width: x.width,
+                    height: x.height,
+                    options: x.options,
+                    angle: x.body.angle,
+                    velocity: x.body.velocity,
+                    angularVelocity: x.body.angularVelocity,
+                    id: x.body.id,
+                    label: x.body.label
+                };
+            }),
+            ...players.map(x => {
+                return {
+                    position: x.box.body.position,
+                    width: x.box.width,
+                    height: x.box.height,
+                    options: x.box.options,
+                    angle: x.box.body.angle,
+                    velocity: x.box.body.velocity,
+                    angularVelocity: x.box.body.angularVelocity,
+                    id: x.id
+                }
+            })
+        ]
     };
 }
