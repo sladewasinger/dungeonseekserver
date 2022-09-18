@@ -1,4 +1,5 @@
 <template>
+  <div id="gameContainer"></div>
 </template>
 
 <script>
@@ -14,7 +15,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-#gameCanvas {
+#gameContainer {
   width: 100%;
   height: 100%;
   position: absolute;
@@ -22,5 +23,6 @@ export default {
   left: 0;
   /* pointer-events: none; */
   image-rendering: pixelated;
+  text-align: center;
 }
 </style>

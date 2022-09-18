@@ -6,7 +6,6 @@ const createjs = window.createjs;
 
 export class Engine {
     constructor() {
-        this.camera = new Camera(0, 0, 2);
         this.matterEngine = new MatterEngine();
         this.socketUrl = undefined;
         console.log(process.env);
@@ -61,5 +60,18 @@ export class Engine {
         delta = Math.min(64, Math.max(this.fps, delta));
         this.matterEngine.update(delta, this.gameState, this.keys);
         this.renderer.update(this.gameState);
+
+        if (this.keys['ArrowUp']) {
+            this.renderer.camera.setPosition(this.renderer.camera.x, this.renderer.camera.y + 1);
+        }
+        if (this.keys['ArrowDown']) {
+            this.renderer.camera.setPosition(this.renderer.camera.x, this.renderer.camera.y - 1);
+        }
+        if (this.keys['ArrowLeft']) {
+            this.renderer.camera.setPosition(this.renderer.camera.x + 1, this.renderer.camera.y);
+        }
+        if (this.keys['ArrowRight']) {
+            this.renderer.camera.setPosition(this.renderer.camera.x - 1, this.renderer.camera.y);
+        }
     }
 }

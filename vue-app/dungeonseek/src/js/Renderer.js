@@ -1,21 +1,25 @@
 import * as PIXI from 'pixi.js';
-import { ReactiveFlags } from 'vue';
+import { Camera } from './Camera.js';
 
 export class Renderer {
     constructor() {
         this.app = new PIXI.Application({
             antialias: false,
             width: 800,
-            height: 800,
+            height: 600,
             forceCanvas: true,
             backgroundAlpha: 0
         });
-        document.body.appendChild(this.app.view);
+        document.getElementById('gameContainer').appendChild(this.app.view);
+
+        this.camera = new Camera(0, 0, 1);
+        this.camera.container.position = new PIXI.Point(0, 0);
+        this.app.stage.addChild(this.camera.container);
     }
 
     update(gameState) {
         for (var box of gameState.boxes) {
-            const rect = this.app.stage.children.find(x => x.id === box.id);
+            const rect = this.camera.container.children.find(x => x.id === box.id);
             if (!rect) {
                 const rect = new PIXI.Graphics();
                 rect.beginFill("#FF0000");
@@ -23,16 +27,11 @@ export class Renderer {
                 rect.endFill();
                 rect.id = box.id;
                 rect.pivot = new PIXI.Point(box.position.x + box.width / 2, box.position.y + box.height / 2);
-                this.app.stage.addChild(rect);
+                this.camera.container.addChild(rect);
             } else {
                 rect.position.x = box.position.x;
                 rect.position.y = box.position.y;
                 rect.rotation = box.angle;
-            }
-        }
-        for (var item in this.app.stage.children) {
-            if (!gameState.boxes.find(x => x.id === item.id)) {
-                this.app.stage.removeChild(item);
             }
         }
     }
