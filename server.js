@@ -1,7 +1,7 @@
 import { createServer } from 'http';
 import express from 'express';
 import { Server as IoServer } from 'socket.io';
-import { Engine } from './Engine.js';
+import { Engine } from './js/Engine.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
 class Server {
