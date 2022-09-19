@@ -1,5 +1,5 @@
-import { Rectangle } from './Rectangle.mjs';
-import { Player } from './Player.mjs';
+import { Rectangle } from './Rectangle.js';
+import { Player } from './Player.js';
 import Matter from 'matter-js';
 
 class Engine {
