@@ -2,7 +2,7 @@ import { Rectangle } from './Rectangle.js';
 import { Player } from './Player.js';
 import Matter from 'matter-js';
 
-class Engine {
+export class Engine {
     constructor() {
         this.players = [];
         this.fps = 1000 / 60;
@@ -101,6 +101,3 @@ class Engine {
         }
     }
 }
-
-const _Engine = Engine;
-export { _Engine as Engine };
