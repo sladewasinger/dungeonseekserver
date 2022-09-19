@@ -30,11 +30,12 @@ jobs:
         run: |
           mkdir dist
           mkdir -p dist/vue-app/dungeonseek/dist/
+          mkdir -p dist/js
           cp -r vue-app/dungeonseek/dist/ dist/vue-app/dungeonseek/
           cp server.js dist/
           cp -r node_modules dist/
           cp package.json dist/
-          cp *.js dist/
+          cp -r js/ dist/js/
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
