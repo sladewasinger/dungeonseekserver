@@ -17,12 +17,17 @@ export class Renderer {
         this.app.stage.addChild(this.camera.container);
     }
 
-    update(gameState) {
+    update(gameState, playerId) {
         for (var box of gameState.boxes) {
             const rect = this.camera.container.children.find(x => x.id === box.id);
             if (!rect) {
                 const rect = new PIXI.Graphics();
-                rect.beginFill("#FF0000");
+                if (box.id == playerId) {
+                    console.log("drawing my player");
+                    rect.beginFill('0xFF0000');
+                } else {
+                    rect.beginFill("0x000000");
+                }
                 rect.drawRect(box.position.x, box.position.y, box.width, box.height);
                 rect.endFill();
                 rect.id = box.id;

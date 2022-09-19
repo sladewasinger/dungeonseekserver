@@ -1,4 +1,3 @@
-const { Player } = require('./Player');
 const Matter = require('matter-js');
 const http = require('http');
 const express = require('express');
