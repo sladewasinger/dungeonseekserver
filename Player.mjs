@@ -1,4 +1,4 @@
-class Player {
+export class Player {
     constructor(id, box) {
         this.id = id;
         this.box = box;
@@ -6,4 +6,3 @@ class Player {
     }
 }
 
-exports.Player = Player;

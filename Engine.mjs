@@ -1,6 +1,6 @@
-const { Rectangle } = require('./Rectangle');
-const { Player } = require('./Player');
-const Matter = require('matter-js');
+import { Rectangle } from './Rectangle.mjs';
+import { Player } from './Player.mjs';
+import Matter from 'matter-js';
 
 class Engine {
     constructor() {
@@ -102,4 +102,5 @@ class Engine {
     }
 }
 
-exports.Engine = Engine;
+const _Engine = Engine;
+export { _Engine as Engine };
