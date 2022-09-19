@@ -1,9 +1,8 @@
-import { Rectangle } from './Rectangle.js';
-import { Player } from './Player.js';
-import Matter from 'matter-js';
-// const Matter = require('matter-js');
+const { Rectangle } = require('./Rectangle');
+const { Player } = require('./Player');
+const Matter = require('matter-js');
 
-export class Engine {
+class Engine {
     constructor() {
         this.players = [];
         this.fps = 1000 / 60;
@@ -102,3 +101,5 @@ export class Engine {
         }
     }
 }
+
+exports.Engine = Engine;

@@ -1,9 +1,7 @@
-import { createServer } from 'http';
-import express from 'express';
-import { Server as IoServer } from "socket.io";
-import { Engine } from './Engine.js';
-import path from 'path';
-import { fileURLToPath } from 'url';
+const { createServer } = require('http');
+const express = require('express');
+const { Server: IoServer } = require('socket.io');
+const { Engine } = require('./Engine');
 
 class Server {
     constructor() {
@@ -11,8 +9,6 @@ class Server {
     }
 
     init() {
-        const __filename = fileURLToPath(import.meta.url);
-        const __dirname = path.dirname(__filename);
         const urlPath = __dirname + '/vue-app/dungeonseek/dist/';
         this.expressApp = express();
         // this.expressApp.use(cors({
