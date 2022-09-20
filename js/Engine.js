@@ -1,6 +1,7 @@
 import { Rectangle } from './Rectangle.js';
 import { Player } from './Player.js';
 import Matter from 'matter-js';
+import { MazeGenerator } from './MazeGenerator.js';
 
 export class Engine {
     constructor() {
@@ -10,6 +11,7 @@ export class Engine {
 
     init() {
         this.matterEngine = Matter.Engine.create();
+        this.mazeGenerator = new MazeGenerator();
 
         var boxA = new Rectangle(400, 200, 80, 80);
         var boxB = new Rectangle(450, 50, 80, 80);
@@ -77,6 +79,17 @@ export class Engine {
                         velocity: x.box.body.velocity,
                         angularVelocity: x.box.body.angularVelocity,
                         id: x.id
+                    }
+                }),
+                ...this.mazeGenerator.getArray().map(x => {
+                    return {
+                        position: { x: x.x, y: x.y },
+                        width: 50,
+                        height: 50,
+                        id: x.x * x.y,
+                        velocity: { x: 0, y: 0 },
+                        angularVelocity: { x: 0, y: 0 },
+                        angle: 0,
                     }
                 })
             ]
