@@ -82,6 +82,7 @@ export class Engine {
                     }
                 }),
                 ...this.mazeGenerator.getArray().map(x => {
+
                     return {
                         position: { x: x.x, y: x.y },
                         width: 50,
