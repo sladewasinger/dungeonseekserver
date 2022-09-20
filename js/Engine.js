@@ -21,7 +21,9 @@ export class Engine {
             boxA,
             boxB,
             ground
-        ]
+        ];
+        const mazeBoxes = this.mazeGenerator.getArray().map(cell => new Rectangle(cell.x * 25, cell.y * 25, 25, 25, { isStatic: true }));
+        this.boxes.push(...mazeBoxes);
 
         // add all of the bodies to the world
         Matter.Composite.add(this.matterEngine.world, this.boxes.map(x => x.body));
@@ -55,20 +57,6 @@ export class Engine {
 
     getGameState() {
         try {
-            const mazeBoxes = this.mazeGenerator.getArray().map(cell => {
-                return {
-                    position: { x: cell.x * 25, y: cell.y * 25 },
-                    width: 25,
-                    height: 25,
-                    angle: 0,
-                    pivot: { x: 0, y: 0 },
-                    velocity: { x: 0, y: 0 },
-                    angularVelocity: 0,
-                    isStatic: true,
-                    options: {},
-                    id: cell.x * cell.y + 100
-                }
-            });
             return {
                 boxes: [
                     ...this.boxes.map(x => {
@@ -95,8 +83,7 @@ export class Engine {
                             angularVelocity: x.box.body.angularVelocity,
                             id: x.id
                         }
-                    }),
-                    ...mazeBoxes
+                    })
                 ]
             };
         } catch (e) {
