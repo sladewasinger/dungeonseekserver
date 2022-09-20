@@ -31,6 +31,7 @@ export class Renderer {
                 rect.drawRect(box.position.x, box.position.y, box.width, box.height);
                 rect.endFill();
                 rect.id = box.id;
+                rect.isStatic = box.isStatic;
                 rect.pivot = new PIXI.Point(box.position.x + box.width / 2, box.position.y + box.height / 2);
                 this.camera.container.addChild(rect);
             } else {

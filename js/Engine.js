@@ -11,7 +11,7 @@ export class Engine {
 
     init() {
         this.matterEngine = Matter.Engine.create();
-        this.mazeGenerator = new MazeGenerator();
+        this.mazeGenerator = new MazeGenerator(10, 10);
 
         var boxA = new Rectangle(400, 200, 80, 80);
         var boxB = new Rectangle(450, 50, 80, 80);
@@ -54,47 +54,54 @@ export class Engine {
     }
 
     getGameState() {
-        return {
-            boxes: [
-                ...this.boxes.map(x => {
-                    return {
-                        position: x.body.position,
-                        width: x.width,
-                        height: x.height,
-                        options: x.options,
-                        angle: x.body.angle,
-                        velocity: x.body.velocity,
-                        angularVelocity: x.body.angularVelocity,
-                        id: x.body.id,
-                        label: x.body.label
-                    };
-                }),
-                ...this.players.map(x => {
-                    return {
-                        position: x.box.body.position,
-                        width: x.box.width,
-                        height: x.box.height,
-                        options: x.box.options,
-                        angle: x.box.body.angle,
-                        velocity: x.box.body.velocity,
-                        angularVelocity: x.box.body.angularVelocity,
-                        id: x.id
-                    }
-                }),
-                ...this.mazeGenerator.getArray().map(x => {
-
-                    return {
-                        position: { x: x.x, y: x.y },
-                        width: 50,
-                        height: 50,
-                        id: x.x * x.y,
-                        velocity: { x: 0, y: 0 },
-                        angularVelocity: { x: 0, y: 0 },
-                        angle: 0,
-                    }
-                })
-            ]
-        };
+        try {
+            const mazeBoxes = this.mazeGenerator.getArray().map(cell => {
+                return {
+                    position: { x: cell.x * 25, y: cell.y * 25 },
+                    width: 25,
+                    height: 25,
+                    angle: 0,
+                    pivot: { x: 0, y: 0 },
+                    velocity: { x: 0, y: 0 },
+                    angularVelocity: 0,
+                    isStatic: true,
+                    options: {},
+                    id: cell.x * cell.y + 100
+                }
+            });
+            return {
+                boxes: [
+                    ...this.boxes.map(x => {
+                        return {
+                            position: x.body.position,
+                            width: x.width,
+                            height: x.height,
+                            options: x.options,
+                            angle: x.body.angle,
+                            velocity: x.body.velocity,
+                            angularVelocity: x.body.angularVelocity,
+                            id: x.body.id,
+                            label: x.body.label
+                        };
+                    }),
+                    ...this.players.map(x => {
+                        return {
+                            position: x.box.body.position,
+                            width: x.box.width,
+                            height: x.box.height,
+                            options: x.box.options,
+                            angle: x.box.body.angle,
+                            velocity: x.box.body.velocity,
+                            angularVelocity: x.box.body.angularVelocity,
+                            id: x.id
+                        }
+                    }),
+                    ...mazeBoxes
+                ]
+            };
+        } catch (e) {
+            console.log(e);
+        }
     }
 
     update() {

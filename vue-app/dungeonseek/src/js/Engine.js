@@ -1,8 +1,7 @@
 import { MatterEngine } from './MatterEngine';
 import { io } from 'socket.io-client';
 import { Renderer } from './Renderer';
-import { MazeGenerator } from './MazeGenerator';
-]
+
 export class Engine {
     constructor() {
         this.matterEngine = new MatterEngine();
@@ -14,7 +13,6 @@ export class Engine {
         this.socket = io(this.socketUrl);
         this.gameState = { boxes: [] };
         this.fps = 1000 / 60;
-        this.mazeGenerator = new MazeGenerator();
         this.keys = {};
         this.canvas = document.getElementById('gameCanvas');
 
