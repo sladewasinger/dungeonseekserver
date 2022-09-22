@@ -2,11 +2,13 @@ import * as PIXI from 'pixi.js';
 import { Camera } from './Camera.js';
 
 export class Renderer {
-    constructor() {
+    constructor(width, height) {
+        this.width = width;
+        this.height = height;
         this.app = new PIXI.Application({
             antialias: false,
-            width: 800,
-            height: 600,
+            width: this.width,
+            height: this.height,
             forceCanvas: true,
             backgroundAlpha: 0
         });

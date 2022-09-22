@@ -32,7 +32,7 @@ export class Engine {
             }
         });
 
-        this.renderer = new Renderer();
+        this.renderer = new Renderer(800, 600);
     }
 
     keyDown(e) {
@@ -56,6 +56,11 @@ export class Engine {
         delta = Math.min(64, Math.max(this.fps, delta));
         this.matterEngine.update(delta, this.gameState, this.keys);
         this.renderer.update(this.gameState, this.socket.id);
+
+        let player = this.gameState.boxes.find(x => x.id === this.socket.id);
+        if (player) {
+            this.renderer.camera.setPosition(player.position.x - this.renderer.width / 2, player.position.y - this.renderer.height / 2);
+        }
 
         if (this.keys['ArrowUp']) {
             this.renderer.camera.setPosition(this.renderer.camera.x, this.renderer.camera.y + 1);
