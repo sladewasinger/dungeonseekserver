@@ -32,7 +32,7 @@ export class MatterEngine {
         }
     }
 
-    update(delta, gameState, keys) {
+    update(delta, gameState, keys, playerId) {
         Engine.update(this.engine, delta);
 
         var boxA = this.engine.world.bodies.find(x => x.id == gameState.boxes[0].id);
@@ -41,6 +41,22 @@ export class MatterEngine {
         }
         if (keys["a"]) {
             Body.setVelocity(boxA, { x: -3, y: 0 });
+        }
+
+        let player = this.engine.world.bodies.find(x => x.id === playerId);
+        if (player) {
+            if (keys['d']) {
+                Matter.Body.setVelocity(player, { x: 3, y: player.velocity.y });
+            }
+            if (keys['a']) {
+                Matter.Body.setVelocity(player, { x: -3, y: player.velocity.y });
+            }
+            if (keys['w']) {
+                Matter.Body.setVelocity(player, { x: player.velocity.x, y: -3 });
+            }
+            if (keys['s']) {
+                Matter.Body.setVelocity(player, { x: player.velocity.x, y: 3 });
+            }
         }
     }
 }

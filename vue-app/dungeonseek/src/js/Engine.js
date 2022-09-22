@@ -1,6 +1,7 @@
 import { MatterEngine } from './MatterEngine';
 import { io } from 'socket.io-client';
 import { Renderer } from './Renderer';
+import Matter from 'matter-js';
 
 export class Engine {
     constructor() {
@@ -54,7 +55,7 @@ export class Engine {
         const endTime = new Date();
         let delta = endTime - this.startTime;
         delta = Math.min(64, Math.max(this.fps, delta));
-        this.matterEngine.update(delta, this.gameState, this.keys);
+        this.matterEngine.update(delta, this.gameState, this.keys, this.socket.id);
         this.renderer.update(this.gameState, this.socket.id);
 
         let player = this.gameState.boxes.find(x => x.id === this.socket.id);
@@ -62,17 +63,17 @@ export class Engine {
             this.renderer.camera.setPosition(player.position.x - this.renderer.width / 2, player.position.y - this.renderer.height / 2);
         }
 
-        if (this.keys['ArrowUp']) {
-            this.renderer.camera.setPosition(this.renderer.camera.x, this.renderer.camera.y + 1);
-        }
-        if (this.keys['ArrowDown']) {
-            this.renderer.camera.setPosition(this.renderer.camera.x, this.renderer.camera.y - 1);
-        }
-        if (this.keys['ArrowLeft']) {
-            this.renderer.camera.setPosition(this.renderer.camera.x + 1, this.renderer.camera.y);
-        }
-        if (this.keys['ArrowRight']) {
-            this.renderer.camera.setPosition(this.renderer.camera.x - 1, this.renderer.camera.y);
-        }
+        // if (this.keys['ArrowUp']) {
+        //     this.renderer.camera.setPosition(this.renderer.camera.x, this.renderer.camera.y + 1);
+        // }
+        // if (this.keys['ArrowDown']) {
+        //     this.renderer.camera.setPosition(this.renderer.camera.x, this.renderer.camera.y - 1);
+        // }
+        // if (this.keys['ArrowLeft']) {
+        //     this.renderer.camera.setPosition(this.renderer.camera.x + 1, this.renderer.camera.y);
+        // }
+        // if (this.keys['ArrowRight']) {
+        //     this.renderer.camera.setPosition(this.renderer.camera.x - 1, this.renderer.camera.y);
+        // }
     }
 }
