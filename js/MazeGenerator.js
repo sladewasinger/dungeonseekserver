@@ -61,7 +61,7 @@ export class MazeGenerator {
         this.closeOuterWalls();
     }
     removeRandomWalls() {
-        const threshold = 0.1;
+        const threshold = 0.2;
         for (let i = 0; i < this.width; i++) {
             for (let j = 0; j < this.height; j++) {
                 if (Math.random() < threshold) {
