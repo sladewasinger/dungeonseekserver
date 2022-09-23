@@ -18,6 +18,12 @@ export class Renderer {
         this.camera = new Camera(0, 0, 1);
         this.camera.container.position = new PIXI.Point(0, 0);
         this.app.stage.addChild(this.camera.container);
+
+        window.addEventListener('keydown', function (e) {
+            if (e.key == ' ' && e.target == document.body) {
+                e.preventDefault();
+            }
+        });
     }
 
     update(gameState, playerId) {
