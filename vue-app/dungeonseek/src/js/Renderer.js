@@ -28,7 +28,6 @@ export class Renderer {
                     console.log("drawing my player");
                     rect.beginFill('0xFF0000');
                 } else if (box.color) {
-                    console.log("drawing other player");
                     rect.beginFill(box.color);
                 } else {
                     rect.beginFill("0x000000");
