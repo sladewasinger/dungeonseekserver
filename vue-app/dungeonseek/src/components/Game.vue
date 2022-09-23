@@ -1,14 +1,27 @@
 <template>
+  <h1 v-if="winner">You found it! You won!</h1>
+  <h1 v-if="!winner">Find the purple box!</h1>
   <div id="gameContainer"></div>
 </template>
 
 <script>
-import { init as GameInit } from '../js/Game.js';
+import { Engine } from '../js/Engine.js';
 
 export default {
   name: 'Game',
+  data() {
+    return {
+      winner: false
+    }
+  },
+  methods: {
+    onWin() {
+      this.winner = true;
+    }
+  },
   mounted() {
-    GameInit();
+    const engine = new Engine(this.onWin);
+    engine.init()
   }
 }
 </script>
@@ -16,11 +29,6 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 #gameContainer {
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
   /* pointer-events: none; */
   image-rendering: pixelated;
   text-align: center;

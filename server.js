@@ -33,7 +33,7 @@ class Server {
         });
         this.socketServer.on('connection', (socket) => {
             console.log('user connected', socket.id);
-            this.engine.createPlayer(socket.id);
+            this.engine.createPlayer(socket, socket.id);
 
             socket.on('disconnect', () => {
                 console.log('user disconnected');

@@ -11,18 +11,21 @@ export class Engine {
 
     init() {
         this.matterEngine = Matter.Engine.create();
-        this.mazeGenerator = new MazeGenerator(10, 10);
+        this.matterEngine.gravity.y = 0;
+        this.mazeGenerator = new MazeGenerator(5, 5, 100, 5);
 
         var boxA = new Rectangle(400, 200, 80, 80);
         var boxB = new Rectangle(450, 50, 80, 80);
         var ground = new Rectangle(400, 610, 500, 60, { isStatic: true });
-
+        this.endGoal = new Rectangle(
+            (this.mazeGenerator.width - 1) * this.mazeGenerator.scale,
+            (this.mazeGenerator.height - 1) * this.mazeGenerator.scale,
+            this.mazeGenerator.scale, this.mazeGenerator.scale, { isStatic: true });
+        this.endGoal.color = '0xFF00FF';
         this.boxes = [
-            boxA,
-            boxB,
-            ground
+            this.endGoal
         ];
-        const mazeBoxes = this.mazeGenerator.getArray().map(cell => new Rectangle(cell.x * 25, cell.y * 25, 25, 25, { isStatic: true }));
+        const mazeBoxes = this.mazeGenerator.wallsAsBoxes(100, 5);// .getArray().flatMap(cell => cell.wallsAsBoxes(100, 5));
         this.boxes.push(...mazeBoxes);
 
         // add all of the bodies to the world
@@ -31,8 +34,8 @@ export class Engine {
         setInterval(this.update.bind(this), this.fps);
     }
 
-    createPlayer(id) {
-        const player = new Player(id, new Rectangle(300, 200, 50, 50));
+    createPlayer(socket, id) {
+        const player = new Player(socket, id, new Rectangle(0, 0, 25, 25, { frictionAir: 0.05 }));
         this.players.push(player);
         Matter.Composite.add(this.matterEngine.world, player.box.body);
     }
@@ -69,7 +72,8 @@ export class Engine {
                             velocity: x.body.velocity,
                             angularVelocity: x.body.angularVelocity,
                             id: x.body.id,
-                            label: x.body.label
+                            label: x.body.label,
+                            color: x.color
                         };
                     }),
                     ...this.players.map(x => {
@@ -96,16 +100,25 @@ export class Engine {
         for (const player of this.players) {
             const keys = player.keys;
             const box = player.box;
-            if (keys['d']) {
-                Matter.Body.setVelocity(box.body, { x: 3, y: box.body.velocity.y });
-            }
-            if (keys['a']) {
-                Matter.Body.setVelocity(box.body, { x: -3, y: box.body.velocity.y });
-            }
+            const vel = { x: 0, y: 0 };
 
-            if (box.body.position.y > 700) {
-                Matter.Body.setPosition(box.body, { x: 400, y: 0 });
+            if (keys['w']) vel.y -= 1;
+            if (keys['s']) vel.y += 1;
+            if (keys['a']) vel.x -= 1;
+            if (keys['d']) vel.x += 1;
+
+            vel.x *= 3;
+            vel.y *= 3;
+
+            Matter.Body.setVelocity(box.body, vel);
+
+            if (Matter.Collision.collides(box.body, this.endGoal.body) && !player.winner) {
+                player.winner = true;
+                player.socket.emit('winner');
             }
+            // if (box.body.position.y > 700) {
+            //     Matter.Body.setPosition(box.body, { x: 400, y: 0 });
+            // }
         }
     }
 }

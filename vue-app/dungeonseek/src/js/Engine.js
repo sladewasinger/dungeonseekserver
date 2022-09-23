@@ -4,7 +4,7 @@ import { Renderer } from './Renderer';
 import Matter from 'matter-js';
 
 export class Engine {
-    constructor() {
+    constructor(winnerCallbac) {
         this.matterEngine = new MatterEngine();
         this.socketUrl = undefined;
         if (process.env.NODE_ENV == 'local') {
@@ -31,6 +31,9 @@ export class Engine {
             } catch (e) {
                 console.log(e);
             }
+        });
+        this.socket.on('winner', () => {
+            winnerCallbac();
         });
 
         this.renderer = new Renderer(800, 600);

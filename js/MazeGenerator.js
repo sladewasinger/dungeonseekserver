@@ -1,4 +1,5 @@
 import { Point } from './Point.js';
+import { Rectangle } from './Rectangle.js';
 
 export class Cell {
     constructor(x, y) {
@@ -10,17 +11,19 @@ export class Cell {
         this.eastWall = true;
         this.visited = false;
     }
+
+
 }
 
 export class MazeGenerator {
-    constructor(width, height) {
+    constructor(width, height, scale, wallThickness) {
         this.width = width;
         this.height = height;
+        this.scale = scale;
+        this.wallThickness = wallThickness;
         this.maze = [];
         this.start = new Point(0, 0);
         this.end = new Point(0, 0);
-        this.current = null;
-        this.next = null;
         this.stack = [];
 
         // Initialize maze
@@ -36,20 +39,83 @@ export class MazeGenerator {
         this.end = new Point(width - 1, height - 1);
 
         // Set current to start
-        this.current = this.maze[this.start.x][this.start.y];
-        this.current.visited = true;
+        let current = this.maze[this.start.x][this.start.y];
+        current.westWall = false;
+        current.visited = true;
         this.stack.push(this.current);
 
         // Create maze
         while (this.stack.length > 0) {
-            let next = this.getRandomNeighbor(this.current);
+            let next = this.getRandomNeighbor(current);
             if (next) {
                 next.visited = true;
-                this.removeWalls(this.current, next);
-                this.current = next;
-                this.stack.push(this.current);
+                this.removeWalls(current, next);
+                current = next;
+                this.stack.push(current);
             } else {
-                this.current = this.stack.pop();
+                current = this.stack.pop();
+            }
+        }
+
+        this.removeRandomWalls();
+        this.closeOuterWalls();
+    }
+    removeRandomWalls() {
+        const threshold = 0.1;
+        for (let i = 0; i < this.width; i++) {
+            for (let j = 0; j < this.height; j++) {
+                if (Math.random() < threshold) {
+                    this.maze[i][j].northWall = false;
+                }
+                if (Math.random() < threshold) {
+                    this.maze[i][j].westWall = false;
+                }
+                if (Math.random() < threshold) {
+                    this.maze[i][j].eastWall = false;
+                }
+                if (Math.random() < threshold) {
+                    this.maze[i][j].southWall = false;
+                }
+            }
+        }
+    }
+    wallsAsBoxes() {
+        const boxes = [];
+        for (let i = 0; i < this.width; i++) {
+            for (let j = 0; j < this.height; j++) {
+                const cell = this.maze[i][j];
+                if (cell.northWall) {
+                    boxes.push(new Rectangle(cell.x * this.scale, cell.y * this.scale - this.scale / 2, this.scale, this.wallThickness, { isStatic: true }));
+                }
+                if (cell.westWall) {
+                    boxes.push(new Rectangle(cell.x * this.scale - this.scale / 2, cell.y * this.scale, this.wallThickness, this.scale, { isStatic: true }));
+                }
+                if (cell.southWall) {
+                    boxes.push(new Rectangle(cell.x * this.scale, cell.y * this.scale + this.scale - this.scale / 2, this.scale, this.wallThickness, { isStatic: true }));
+                }
+                if (cell.eastWall) {
+                    boxes.push(new Rectangle(cell.x * this.scale + this.scale - this.scale / 2, cell.y * this.scale, this.wallThickness, this.scale, { isStatic: true }));
+                }
+            }
+        }
+        return boxes;
+    }
+
+    closeOuterWalls() {
+        for (let i = 0; i < this.width; i++) {
+            for (let j = 0; j < this.height; j++) {
+                if (i === 0) {
+                    this.maze[i][j].westWall = true;
+                }
+                if (i === this.width - 1) {
+                    this.maze[i][j].eastWall = true;
+                }
+                if (j === 0) {
+                    this.maze[i][j].northWall = true;
+                }
+                if (j === this.height - 1) {
+                    this.maze[i][j].southWall = true;
+                }
             }
         }
     }
@@ -65,22 +131,22 @@ export class MazeGenerator {
     }
 
     removeWalls(current, next) {
-        let x = current.x - next.x;
-        if (x === 1) {
-            current.westWall = false;
-            next.eastWall = false;
-        } else if (x === -1) {
-            current.eastWall = false;
+        // remove walls
+        if (current.x < next.x) {
             next.westWall = false;
+            current.eastWall = false;
+        }
+        else if (current.x > next.x) {
+            next.eastWall = false;
+            current.westWall = false;
         }
 
-        let y = current.y - next.y;
-        if (y === 1) {
-            current.northWall = false;
-            next.southWall = false;
-        } else if (y === -1) {
-            current.southWall = false;
+        if (current.y < next.y) {
             next.northWall = false;
+            current.southWall = false;
+        } else if (current.y > next.y) {
+            next.southWall = false;
+            current.northWall = false;
         }
     }
 
