@@ -4,9 +4,10 @@ import Matter from 'matter-js';
 import { MazeGenerator } from './MazeGenerator.js';
 
 export class Engine {
-    constructor() {
+    constructor(socketServer) {
         this.players = [];
         this.fps = 1000 / 60;
+        this.socketServer = socketServer;
     }
 
     init() {
@@ -42,6 +43,9 @@ export class Engine {
 
     removePlayer(id) {
         const player = this.players.find(x => x.id === id);
+        if (!player) return;
+        console.log("removing player", id);
+        this.socketServer.emit('playerLeft', id);
         this.players = this.players.filter(x => x.id !== id); /* Remove player from list */
         Matter.Composite.remove(this.matterEngine.world, player.box.body); /* Remove player from world */
     }
@@ -58,11 +62,11 @@ export class Engine {
         player.keys[key] = false;
     }
 
-    getGameState() {
-        try {
-            return {
-                boxes: [
-                    ...this.boxes.map(x => {
+    getInitialGameState() {
+        return {
+            boxes: [
+                ...this.boxes
+                    .map(x => {
                         return {
                             position: x.body.position,
                             width: x.width,
@@ -75,7 +79,31 @@ export class Engine {
                             label: x.body.label,
                             color: x.color
                         };
-                    }),
+                    })
+            ]
+        };
+    }
+
+    getGameState() {
+        try {
+            return {
+                boxes: [
+                    // ...this.boxes
+                    //     .filter(x => !x.isStatic)
+                    //     .map(x => {
+                    //         return {
+                    //             position: x.body.position,
+                    //             width: x.width,
+                    //             height: x.height,
+                    //             options: x.options,
+                    //             angle: x.body.angle,
+                    //             velocity: x.body.velocity,
+                    //             angularVelocity: x.body.angularVelocity,
+                    //             id: x.body.id,
+                    //             label: x.body.label,
+                    //             color: x.color
+                    //         };
+                    //     }),
                     ...this.players.map(x => {
                         return {
                             position: x.box.body.position,

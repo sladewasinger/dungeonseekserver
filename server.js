@@ -6,7 +6,6 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 class Server {
     constructor() {
-        this.engine = new Engine();
     }
 
     init() {
@@ -31,6 +30,9 @@ class Server {
                 methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
             }
         });
+
+        this.engine = new Engine(this.socketServer);
+
         this.socketServer.on('connection', (socket) => {
             console.log('user connected', socket.id);
             this.engine.createPlayer(socket, socket.id);
@@ -48,7 +50,7 @@ class Server {
                 this.engine.keyUp(socket.id, key);
             });
 
-            socket.emit('gameState', this.engine.getGameState());
+            socket.emit('initialGameState', this.engine.getInitialGameState());
         });
 
         this.engine.init();
