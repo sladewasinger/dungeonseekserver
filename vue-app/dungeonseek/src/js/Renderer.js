@@ -1,3 +1,4 @@
+import { exportDefaultSpecifier } from '@babel/types';
 import * as PIXI from 'pixi.js';
 import { Camera } from './Camera.js';
 
@@ -25,7 +26,6 @@ export class Renderer {
             if (!rect) {
                 const rect = new PIXI.Graphics();
                 if (box.id == playerId) {
-                    console.log("drawing my player");
                     rect.beginFill('0xFF0000');
                 } else if (box.color) {
                     rect.beginFill(box.color);
@@ -38,16 +38,23 @@ export class Renderer {
                 rect.isStatic = box.isStatic;
                 rect.pivot = new PIXI.Point(box.position.x + box.width / 2, box.position.y + box.height / 2);
                 this.camera.container.addChild(rect);
-            } else {
+            } else if (!box.isStatic) {
                 rect.position.x = box.position.x;
                 rect.position.y = box.position.y;
                 rect.rotation = box.angle;
             }
         }
-        for (var rect of this.camera.container.children) {
-            if (!gameState.boxes.find(x => x.id === rect.id)) {
-                this.camera.container.removeChild(rect);
-            }
+        // for (var rect of this.camera.container.children) {
+        //     if (!gameState.boxes.find(x => x.id === rect.id)) {
+        //         this.camera.container.removeChild(rect);
+        //     }
+        // }
+    }
+
+    removeById(id) {
+        const rect = this.camera.container.children.find(x => x.id === id);
+        if (rect) {
+            this.camera.container.removeChild(rect);
         }
     }
 }

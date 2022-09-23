@@ -32,6 +32,21 @@ export class Engine {
                 console.log(e);
             }
         });
+        this.socket.on('initialGameState', (gs) => {
+            try {
+                console.log('initialGameState');
+                this.gameState = gs;
+                this.matterEngine.onGameStateUpdated(this.gameState);
+                this.renderer.update(this.gameState, this.socket.id);
+            } catch (e) {
+                console.log(e);
+            }
+        });
+        this.socket.on('playerLeft', (id) => {
+            console.log("playerLeft", id);
+            // hacky, but this should work:
+            setTimeout(() => this.renderer.removeById(id), 1000);
+        });
         this.socket.on('winner', () => {
             winnerCallbac();
         });
