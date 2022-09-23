@@ -32,6 +32,7 @@ class Server {
         });
 
         this.engine = new Engine(this.socketServer);
+        this.engine.init();
 
         this.socketServer.on('connection', (socket) => {
             console.log('user connected', socket.id);
@@ -53,7 +54,6 @@ class Server {
             socket.emit('initialGameState', this.engine.getInitialGameState());
         });
 
-        this.engine.init();
         setInterval(this.clientUpdateLoop.bind(this), 1000 / 30); // 30 updates per second
     }
 

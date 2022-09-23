@@ -35,14 +35,6 @@ export class MatterEngine {
     update(delta, gameState, keys, playerId) {
         Engine.update(this.engine, delta);
 
-        var boxA = this.engine.world.bodies.find(x => x.id == gameState.boxes[0].id);
-        if (keys["ArrowRight"] || keys["d"]) {
-            Body.setVelocity(boxA, { x: 3, y: 0 });
-        }
-        if (keys["a"]) {
-            Body.setVelocity(boxA, { x: -3, y: 0 });
-        }
-
         let player = this.engine.world.bodies.find(x => x.id === playerId);
         if (player) {
             if (keys['d']) {

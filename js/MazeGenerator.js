@@ -11,8 +11,6 @@ export class Cell {
         this.eastWall = true;
         this.visited = false;
     }
-
-
 }
 
 export class MazeGenerator {

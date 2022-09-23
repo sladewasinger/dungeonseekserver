@@ -1,4 +1,3 @@
-import { exportDefaultSpecifier } from '@babel/types';
 import * as PIXI from 'pixi.js';
 import { Camera } from './Camera.js';
 
@@ -13,6 +12,7 @@ export class Renderer {
             forceCanvas: true,
             backgroundAlpha: 0
         });
+        this.startTime = Date.now();
         document.getElementById('gameContainer').appendChild(this.app.view);
 
         this.camera = new Camera(0, 0, 1);
@@ -27,6 +27,11 @@ export class Renderer {
     }
 
     update(gameState, playerId) {
+        const lastUpdatedTime = Date.now();
+        const deltaTime = lastUpdatedTime - this.startTime;
+        this.startTime = lastUpdatedTime;
+        const fps = 1000 / deltaTime;
+
         for (var box of gameState.boxes) {
             const rect = this.camera.container.children.find(x => x.id === box.id);
             if (!rect) {
@@ -40,19 +45,28 @@ export class Renderer {
                 }
                 rect.drawRect(box.position.x, box.position.y, box.width, box.height);
                 rect.endFill();
+                rect.position.x = box.position.x;
+                rect.position.y = box.position.y;
+                rect.rotation = box.angle;
                 rect.id = box.id;
                 rect.isStatic = box.isStatic;
                 rect.pivot = new PIXI.Point(box.position.x + box.width / 2, box.position.y + box.height / 2);
                 this.camera.container.addChild(rect);
-            } else if (!box.isStatic) {
+            } else {
                 rect.position.x = box.position.x;
                 rect.position.y = box.position.y;
                 rect.rotation = box.angle;
             }
         }
         // for (var rect of this.camera.container.children) {
-        //     if (!gameState.boxes.find(x => x.id === rect.id)) {
-        //         this.camera.container.removeChild(rect);
+        //     // if box is outside of camera view, set renderable to false
+        //     if (box.position.x + box.width < this.camera.x ||
+        //         box.position.x > this.camera.x + this.width ||
+        //         box.position.y + box.height < this.camera.y ||
+        //         box.position.y > this.camera.y + this.height) {
+        //         rect.renderable = false;
+        //     } else {
+        //         rect.renderable = true;
         //     }
         // }
     }
