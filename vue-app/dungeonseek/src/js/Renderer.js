@@ -9,7 +9,7 @@ export class Renderer {
             antialias: false,
             width: this.width,
             height: this.height,
-            forceCanvas: true,
+            // forceCanvas: true,
             backgroundAlpha: 0
         });
         this.startTime = Date.now();

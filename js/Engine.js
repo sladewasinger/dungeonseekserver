@@ -13,7 +13,7 @@ export class Engine {
     init() {
         this.matterEngine = Matter.Engine.create();
         this.matterEngine.gravity.y = 0;
-        this.mazeGenerator = new MazeGenerator(100, 100, 75, 5);
+        this.mazeGenerator = new MazeGenerator(25, 25, 75, 5);
 
         var boxA = new Rectangle(400, 200, 80, 80);
         var boxB = new Rectangle(450, 50, 80, 80);
