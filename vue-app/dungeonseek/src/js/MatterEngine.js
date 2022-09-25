@@ -20,6 +20,7 @@ export class MatterEngine {
                     const body = Bodies.rectangle(box.position.x, box.position.y, box.width, box.height, { ...box.options, id: box.id });
                     body.width = box.width;
                     body.height = box.height;
+                    body.color = box.color;
                     Composite.add(this.engine.world, body);
                 } else {
                     const body = this.engine.world.bodies.find(x => x.id === box.id);
