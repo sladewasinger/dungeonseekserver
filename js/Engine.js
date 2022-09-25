@@ -11,6 +11,8 @@ export class Engine {
     }
 
     init() {
+        this.startTime = new Date();
+
         this.matterEngine = Matter.Engine.create();
         this.matterEngine.gravity.y = 0;
         this.mazeGenerator = new MazeGenerator(25, 25, 75, 5);
@@ -124,7 +126,10 @@ export class Engine {
     }
 
     update() {
-        Matter.Engine.update(this.matterEngine, this.fps);
+        const endTime = new Date();
+        let delta = endTime - this.startTime;
+        delta = Math.min(180, Math.max(5, delta));
+        Matter.Engine.update(this.matterEngine, delta);
         for (const player of this.players) {
             const keys = player.keys;
             const box = player.box;

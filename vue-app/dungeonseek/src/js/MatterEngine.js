@@ -10,6 +10,7 @@ export class MatterEngine {
     constructor() {
         // create an engine
         this.engine = Engine.create();
+        this.engine.gravity.y = 0;
     }
 
     onGameStateUpdated(gameState) {
@@ -17,6 +18,8 @@ export class MatterEngine {
             for (var box of gameState.boxes) {
                 if (!this.engine.world.bodies.find(x => x.id === box.id)) {
                     const body = Bodies.rectangle(box.position.x, box.position.y, box.width, box.height, { ...box.options, id: box.id });
+                    body.width = box.width;
+                    body.height = box.height;
                     Composite.add(this.engine.world, body);
                 } else {
                     const body = this.engine.world.bodies.find(x => x.id === box.id);
@@ -37,18 +40,17 @@ export class MatterEngine {
 
         let player = this.engine.world.bodies.find(x => x.id === playerId);
         if (player) {
-            if (keys['d']) {
-                Matter.Body.setVelocity(player, { x: 3, y: player.velocity.y });
-            }
-            if (keys['a']) {
-                Matter.Body.setVelocity(player, { x: -3, y: player.velocity.y });
-            }
-            if (keys['w']) {
-                Matter.Body.setVelocity(player, { x: player.velocity.x, y: -3 });
-            }
-            if (keys['s']) {
-                Matter.Body.setVelocity(player, { x: player.velocity.x, y: 3 });
-            }
+            const vel = { x: 0, y: 0 };
+
+            if (keys['w']) vel.y -= 1;
+            if (keys['s']) vel.y += 1;
+            if (keys['a']) vel.x -= 1;
+            if (keys['d']) vel.x += 1;
+
+            vel.x *= 3;
+            vel.y *= 3;
+
+            Matter.Body.setVelocity(player, vel);
         }
     }
 }

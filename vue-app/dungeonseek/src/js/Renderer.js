@@ -26,7 +26,46 @@ export class Renderer {
         });
     }
 
-    update(gameState, playerId) {
+    update(matterEngine, playerId) {
+        const lastUpdatedTime = Date.now();
+        const deltaTime = lastUpdatedTime - this.startTime;
+        this.startTime = lastUpdatedTime;
+
+        for (var rect of this.camera.container.children) {
+            const body = matterEngine.engine.world.bodies.find(x => x.id === rect.id);
+            if (!body) {
+                this.removeById(rect.id);
+            } else {
+                rect.position.x = body.position.x;
+                rect.position.y = body.position.y;
+                rect.rotation = body.angle;
+            }
+        }
+        for (var body of matterEngine.engine.world.bodies) {
+            const rect = this.camera.container.children.find(x => x.id === body.id);
+            if (!rect) {
+                const rect = new PIXI.Graphics();
+                if (body.id == playerId) {
+                    rect.beginFill('0xFF0000');
+                } else if (body.color) {
+                    rect.beginFill(body.color);
+                } else {
+                    rect.beginFill("0x000000");
+                }
+                rect.drawRect(body.position.x, body.position.y, body.width, body.height);
+                rect.endFill();
+                rect.position.x = body.position.x;
+                rect.position.y = body.position.y;
+                rect.rotation = body.angle;
+                rect.id = body.id;
+                //rect.isStatic = body.isStatic;
+                rect.pivot = new PIXI.Point(body.position.x + body.width / 2, body.position.y + body.height / 2);
+                this.camera.container.addChild(rect);
+            }
+        }
+    }
+
+    update_OLD(gameState, playerId) {
         const lastUpdatedTime = Date.now();
         const deltaTime = lastUpdatedTime - this.startTime;
         this.startTime = lastUpdatedTime;

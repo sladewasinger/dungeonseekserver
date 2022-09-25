@@ -1,7 +1,6 @@
 import { MatterEngine } from './MatterEngine';
 import { io } from 'socket.io-client';
 import { Renderer } from './Renderer';
-import Matter from 'matter-js';
 
 export class Engine {
     constructor(winnerCallbac) {
@@ -37,7 +36,7 @@ export class Engine {
                 console.log('initialGameState');
                 this.gameState = gs;
                 this.matterEngine.onGameStateUpdated(this.gameState);
-                this.renderer.update(this.gameState, this.socket.id);
+                this.renderer.update(this.matterEngine, this.socket.id);
             } catch (e) {
                 console.log(e);
             }
@@ -74,9 +73,9 @@ export class Engine {
         let delta = endTime - this.startTime;
         delta = Math.min(64, Math.max(this.fps, delta));
         this.matterEngine.update(delta, this.gameState, this.keys, this.socket.id);
-        this.renderer.update(this.gameState, this.socket.id);
+        this.renderer.update(this.matterEngine, this.socket.id);
 
-        let player = this.gameState.boxes.find(x => x.id === this.socket.id);
+        let player = this.matterEngine.engine.world.bodies.find(x => x.id === this.socket.id);
         if (player) {
             this.renderer.camera.setPosition(player.position.x - this.renderer.width / 2, player.position.y - this.renderer.height / 2);
         }

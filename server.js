@@ -54,7 +54,7 @@ class Server {
             socket.emit('initialGameState', this.engine.getInitialGameState());
         });
 
-        setInterval(this.clientUpdateLoop.bind(this), 1000 / 30); // 30 updates per second
+        setInterval(this.clientUpdateLoop.bind(this), 1000 / 20); // 30 updates per second
     }
 
     clientUpdateLoop() {
