@@ -77,7 +77,12 @@ export class Engine {
 
         let player = this.matterEngine.engine.world.bodies.find(x => x.id === this.socket.id);
         if (player) {
-            this.renderer.camera.setPosition(player.position.x - this.renderer.width / 2, player.position.y - this.renderer.height / 2);
+            // slowly move camera to player position
+
+            this.renderer.camera.setPosition(
+                this.renderer.camera.x + (player.position.x - this.renderer.width / 2 - this.renderer.camera.x) * 0.1,
+                this.renderer.camera.y + (player.position.y - this.renderer.height / 2 - this.renderer.camera.y) * 0.1
+            );
         }
 
         // if (this.keys['ArrowUp']) {
