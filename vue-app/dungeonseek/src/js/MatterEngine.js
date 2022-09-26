@@ -16,15 +16,17 @@ export class MatterEngine {
     onGameStateUpdated(gameState) {
         try {
             for (var box of gameState.boxes) {
-                if (!this.engine.world.bodies.find(x => x.id === box.id)) {
+                var body = this.engine.world.bodies.find(x => x.id === box.id);
+                if (!body) {
                     const body = Bodies.rectangle(box.position.x, box.position.y, box.width, box.height, { ...box.options, id: box.id });
                     body.width = box.width;
                     body.height = box.height;
                     body.color = box.color;
                     Composite.add(this.engine.world, body);
                 } else {
-                    const body = this.engine.world.bodies.find(x => x.id === box.id);
-                    Body.setPosition(body, box.position);
+                    // ease body to box position
+                    var pos = Matter.Vector.lerp(body.position, box.position, 0.2);
+                    Body.setPosition(body, pos);
                     Body.setAngle(body, box.angle);
                     Body.setVelocity(body, box.velocity);
                     Body.setAngularVelocity(body, box.angularVelocity);
