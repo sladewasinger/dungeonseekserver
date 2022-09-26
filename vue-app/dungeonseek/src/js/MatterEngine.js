@@ -25,7 +25,8 @@ export class MatterEngine {
                     Composite.add(this.engine.world, body);
                 } else {
                     // ease body to box position
-                    var pos = Matter.Vector.lerp(body.position, box.position, 0.2);
+                    var lerpScale = 0.5;
+                    var pos = { x: body.position.x + (box.position.x - body.position.x) * lerpScale, y: body.position.y + (box.position.y - body.position.y) * lerpScale };
                     Body.setPosition(body, pos);
                     Body.setAngle(body, box.angle);
                     Body.setVelocity(body, box.velocity);
