@@ -23,7 +23,7 @@ export class Engine {
         this.endGoal = new Rectangle(
             (this.mazeGenerator.width - 1) * this.mazeGenerator.scale,
             (this.mazeGenerator.height - 1) * this.mazeGenerator.scale,
-            this.mazeGenerator.scale, this.mazeGenerator.scale, { isStatic: true });
+            this.mazeGenerator.scale * 0.5, this.mazeGenerator.scale * 0.5, { isStatic: true });
         this.endGoal.color = '0xFF00FF';
         this.boxes = [
             this.endGoal
