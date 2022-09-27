@@ -26,7 +26,7 @@ export class MatterEngine {
                 } else {
                     // ease body to box position
 
-                    var lerpScale = 0.5;
+                    var lerpScale = 0.1;
                     var pos = { x: body.position.x + (box.position.x - body.position.x) * lerpScale, y: body.position.y + (box.position.y - body.position.y) * lerpScale };
                     Body.setPosition(body, pos);
                     Body.setAngle(body, box.angle);
