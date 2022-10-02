@@ -39,15 +39,13 @@ export class Renderer {
 
         for (var rect of this.camera.container.children) {
             const body = matterEngine.engine.world.bodies.find(x => x.id === rect.id);
-            if (!body) {
-                //this.removeById(rect.id);
-            } else {
-                if (rect.id === playerId) {
-                    this.drawGun(rect);
-                }
+            if (body) {
                 rect.position.x = body.position.x;
                 rect.position.y = body.position.y;
                 rect.rotation = body.angle;
+                if (rect.id === playerId) {
+                    this.drawGun(rect);
+                }
             }
         }
         for (var body of matterEngine.engine.world.bodies) {
