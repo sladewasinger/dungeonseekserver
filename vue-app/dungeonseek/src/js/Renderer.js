@@ -1,5 +1,9 @@
 import * as PIXI from 'pixi.js';
+import * as PIXIMath from '@pixi/math';
+import '@pixi/math-extras';
+
 import { Camera } from './Camera.js';
+import { Mouse } from './Mouse.js';
 
 export class Renderer {
     constructor(width, height) {
@@ -12,12 +16,15 @@ export class Renderer {
             // forceCanvas: true,
             backgroundAlpha: 0
         });
+        this.gunLine = undefined;
         this.startTime = Date.now();
         document.getElementById('gameContainer').appendChild(this.app.view);
 
         this.camera = new Camera(0, 0, 1);
         this.camera.container.position = new PIXI.Point(0, 0);
         this.app.stage.addChild(this.camera.container);
+
+        this.mouse = new Mouse(this.camera.container);
 
         window.addEventListener('keydown', function (e) {
             if (e.key == ' ' && e.target == document.body) {
@@ -28,14 +35,16 @@ export class Renderer {
 
     update(matterEngine, playerId) {
         const lastUpdatedTime = Date.now();
-        const deltaTime = lastUpdatedTime - this.startTime;
         this.startTime = lastUpdatedTime;
 
         for (var rect of this.camera.container.children) {
             const body = matterEngine.engine.world.bodies.find(x => x.id === rect.id);
             if (!body) {
-                this.removeById(rect.id);
+                //this.removeById(rect.id);
             } else {
+                if (rect.id === playerId) {
+                    this.drawGun(rect);
+                }
                 rect.position.x = body.position.x;
                 rect.position.y = body.position.y;
                 rect.rotation = body.angle;
@@ -65,49 +74,25 @@ export class Renderer {
         }
     }
 
-    update_OLD(gameState, playerId) {
-        const lastUpdatedTime = Date.now();
-        const deltaTime = lastUpdatedTime - this.startTime;
-        this.startTime = lastUpdatedTime;
-        const fps = 1000 / deltaTime;
-
-        for (var box of gameState.boxes) {
-            const rect = this.camera.container.children.find(x => x.id === box.id);
-            if (!rect) {
-                const rect = new PIXI.Graphics();
-                if (box.id == playerId) {
-                    rect.beginFill('0xFF0000');
-                } else if (box.color) {
-                    rect.beginFill(box.color);
-                } else {
-                    rect.beginFill("0x000000");
-                }
-                rect.drawRect(box.position.x, box.position.y, box.width, box.height);
-                rect.endFill();
-                rect.position.x = box.position.x;
-                rect.position.y = box.position.y;
-                rect.rotation = box.angle;
-                rect.id = box.id;
-                rect.isStatic = box.isStatic;
-                rect.pivot = new PIXI.Point(box.position.x + box.width / 2, box.position.y + box.height / 2);
-                this.camera.container.addChild(rect);
-            } else {
-                rect.position.x = box.position.x;
-                rect.position.y = box.position.y;
-                rect.rotation = box.angle;
-            }
+    drawGun(playerRect) {
+        if (!this.gunLine) {
+            this.gunLine = new PIXI.Graphics();
+            this.gunLine.position.x = 0;
+            this.gunLine.position.y = 0;
+            this.gunLine.id = 'gunLine';
+            this.camera.container.addChild(this.gunLine);
+        } else {
+            const mousePos = this.app.renderer.plugins.interaction.mouse.global;
+            let mouseVector = new PIXIMath.Point(mousePos.x - this.width / 2, mousePos.y - this.height / 2);
+            mouseVector.subtract(playerRect.position);
+            mouseVector = mouseVector.normalize();
+            mouseVector = mouseVector.multiplyScalar(25);
+            this.gunLine
+                .clear()
+                .lineStyle(5, 0x000000, 1)
+                .moveTo(playerRect.position.x, playerRect.position.y)
+                .lineTo(playerRect.position.x + mouseVector.x, playerRect.position.y + mouseVector.y);
         }
-        // for (var rect of this.camera.container.children) {
-        //     // if box is outside of camera view, set renderable to false
-        //     if (box.position.x + box.width < this.camera.x ||
-        //         box.position.x > this.camera.x + this.width ||
-        //         box.position.y + box.height < this.camera.y ||
-        //         box.position.y > this.camera.y + this.height) {
-        //         rect.renderable = false;
-        //     } else {
-        //         rect.renderable = true;
-        //     }
-        // }
     }
 
     removeById(id) {

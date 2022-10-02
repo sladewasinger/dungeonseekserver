@@ -1,7 +1,5 @@
 import * as Matter from 'matter-js';
 var Engine = Matter.Engine,
-    Render = Matter.Render,
-    Runner = Matter.Runner,
     Bodies = Matter.Bodies,
     Body = Matter.Body,
     Composite = Matter.Composite;

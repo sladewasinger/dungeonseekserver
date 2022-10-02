@@ -8,6 +8,8 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@pixi/math": "^6.5.5",
+    "@pixi/math-extras": "^6.5.5",
     "core-js": "^3.8.3",
     "matter-js": "^0.18.0",
     "pixi.js": "^6.5.3",
