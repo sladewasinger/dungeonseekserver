@@ -82,9 +82,8 @@ export class Renderer {
         } else {
             const mousePos = this.app.renderer.plugins.interaction.mouse.global;
             let mouseVector = new PIXIMath.Point(mousePos.x - this.width / 2, mousePos.y - this.height / 2);
-            mouseVector.subtract(playerRect.position);
             mouseVector = mouseVector.normalize();
-            mouseVector = mouseVector.multiplyScalar(25);
+            mouseVector = mouseVector.multiplyScalar(15);
             this.gunLine
                 .clear()
                 .lineStyle(5, 0x000000, 1)
