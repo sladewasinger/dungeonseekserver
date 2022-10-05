@@ -11,6 +11,12 @@ export class MatterEngine {
         this.engine.gravity.y = 0;
     }
 
+    removeById(id) {
+        const body = this.engine.world.bodies.find(x => x.id === id);
+        if (!body) return;
+        Composite.remove(this.engine.world, body);
+    }
+
     onGameStateUpdated(gameState) {
         try {
             for (var box of gameState.boxes) {

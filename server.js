@@ -51,6 +51,10 @@ class Server {
                 this.engine.keyUp(socket.id, key);
             });
 
+            socket.on("shoot", (angle) => {
+                this.engine.shoot(socket.id, angle);
+            });
+
             socket.emit('initialGameState', this.engine.getInitialGameState());
         });
 

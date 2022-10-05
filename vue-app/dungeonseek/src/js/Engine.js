@@ -1,6 +1,7 @@
 import { MatterEngine } from './MatterEngine';
 import { io } from 'socket.io-client';
 import { Renderer } from './Renderer';
+import * as PIXIMath from '@pixi/math';
 
 export class Engine {
     constructor(winnerCallbac) {
@@ -15,6 +16,7 @@ export class Engine {
         this.fps = 1000 / 60;
         this.keys = {};
         this.canvas = document.getElementById('gameCanvas');
+        this.canShoot = true;
 
         window.addEventListener('keydown', e => this.keyDown(e));
         window.addEventListener('keyup', e => this.keyUp(e));
@@ -49,6 +51,10 @@ export class Engine {
         this.socket.on('winner', () => {
             winnerCallbac();
         });
+        this.socket.on('removeEntity', (id) => {
+            this.renderer.removeById(id);
+            this.matterEngine.removeById(id);
+        });
 
         this.renderer = new Renderer(800, 600);
     }
@@ -78,24 +84,26 @@ export class Engine {
         let player = this.matterEngine.engine.world.bodies.find(x => x.id === this.socket.id);
         if (player) {
             // slowly move camera to player position
-
             this.renderer.camera.setPosition(
                 this.renderer.camera.x + (player.position.x - this.renderer.width / 2 - this.renderer.camera.x) * 0.1,
                 this.renderer.camera.y + (player.position.y - this.renderer.height / 2 - this.renderer.camera.y) * 0.1
             );
-        }
 
-        // if (this.keys['ArrowUp']) {
-        //     this.renderer.camera.setPosition(this.renderer.camera.x, this.renderer.camera.y + 1);
-        // }
-        // if (this.keys['ArrowDown']) {
-        //     this.renderer.camera.setPosition(this.renderer.camera.x, this.renderer.camera.y - 1);
-        // }
-        // if (this.keys['ArrowLeft']) {
-        //     this.renderer.camera.setPosition(this.renderer.camera.x + 1, this.renderer.camera.y);
-        // }
-        // if (this.keys['ArrowRight']) {
-        //     this.renderer.camera.setPosition(this.renderer.camera.x - 1, this.renderer.camera.y);
-        // }
+            if (this.renderer.mouse.leftDown && this.canShoot) {
+                this.canShoot = false;
+                // shoot pellet from player
+                // get angle from player to mouse
+
+                let mouseVector = new PIXIMath.Point(this.renderer.mouse.x - this.renderer.width / 2, this.renderer.mouse.y - this.renderer.height / 2);
+                mouseVector = mouseVector.normalize();
+                mouseVector = mouseVector.multiplyScalar(15);
+                let angle = Math.atan2(mouseVector.y, mouseVector.x);
+                this.socket.emit('shoot', angle);
+            }
+
+            if (!this.renderer.mouse.leftDown) {
+                this.canShoot = true;
+            }
+        }
     }
 }

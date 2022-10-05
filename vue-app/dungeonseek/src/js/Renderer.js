@@ -34,6 +34,9 @@ export class Renderer {
     }
 
     update(matterEngine, playerId) {
+        // set mouse pos
+        const mousePos = this.app.renderer.plugins.interaction.mouse.global;
+        this.mouse.setPos(mousePos.x, mousePos.y);
         const lastUpdatedTime = Date.now();
         this.startTime = lastUpdatedTime;
 
@@ -80,8 +83,8 @@ export class Renderer {
             this.gunLine.id = 'gunLine';
             this.camera.container.addChild(this.gunLine);
         } else {
-            const mousePos = this.app.renderer.plugins.interaction.mouse.global;
-            let mouseVector = new PIXIMath.Point(mousePos.x - this.width / 2, mousePos.y - this.height / 2);
+            //const mousePos = this.app.renderer.plugins.interaction.mouse.global;
+            let mouseVector = new PIXIMath.Point(this.mouse.x - this.width / 2, this.mouse.y - this.height / 2);
             mouseVector = mouseVector.normalize();
             mouseVector = mouseVector.multiplyScalar(15);
             this.gunLine

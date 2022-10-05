@@ -5,15 +5,13 @@ export class Mouse {
         this.leftDown = false;
         this.rightDown = false;
         this.middleDown = false;
-        container.on('mousemove', this.onMouseMove.bind(this), false);
-        container.on('mousedown', this.onMouseDown.bind(this), false);
-        container.on('mouseup', this.onMouseUp.bind(this), false);
+        window.addEventListener('mousedown', this.onMouseDown.bind(this));
+        window.addEventListener('mouseup', this.onMouseUp.bind(this));
     }
 
-    onMouseMove(e) {
-        console.log(e);
-        this.x = e.data.global.x;
-        this.y = e.data.global.y;
+    setPos(x, y) {
+        this.x = x;
+        this.y = y;
     }
 
     onMouseDown(e) {

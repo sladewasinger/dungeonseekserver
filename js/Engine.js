@@ -15,7 +15,7 @@ export class Engine {
 
         this.matterEngine = Matter.Engine.create();
         this.matterEngine.gravity.y = 0;
-        this.mazeGenerator = new MazeGenerator(25, 25, 75, 5);
+        this.mazeGenerator = new MazeGenerator(25, 25, 100, 25);
 
         var boxA = new Rectangle(400, 200, 80, 80);
         var boxB = new Rectangle(450, 50, 80, 80);
@@ -30,6 +30,8 @@ export class Engine {
         ];
         const mazeBoxes = this.mazeGenerator.wallsAsBoxes(100, 5);// .getArray().flatMap(cell => cell.wallsAsBoxes(100, 5));
         this.boxes.push(...mazeBoxes);
+
+        this.bullets = [];
 
         // add all of the bodies to the world
         Matter.Composite.add(this.matterEngine.world, this.boxes.map(x => x.body));
@@ -64,6 +66,32 @@ export class Engine {
         player.keys[key] = false;
     }
 
+    shoot(id, angle) {
+        const player = this.players.find(x => x.id === id);
+        if (!player) return;
+        const bullet = new Rectangle(
+            player.box.body.position.x + Math.cos(angle) * (player.box.width / 2),
+            player.box.body.position.y + Math.sin(angle) * (player.box.height / 2),
+            5, 5, {
+            frictionAir: 0.00, isStatic: false,
+            collisionFilter: {
+                mask: 0x0000
+            }
+        });
+        bullet.color = '0x00FF00';
+        const speed = 15;
+        Matter.Body.setVelocity(bullet.body, { x: Math.cos(angle) * speed, y: Math.sin(angle) * speed });
+        Matter.Composite.add(this.matterEngine.world, bullet.body);
+        this.bullets.push(bullet);
+
+        //remove bullet after 1 second
+        setTimeout(() => {
+            Matter.Composite.remove(this.matterEngine.world, bullet.body);
+            this.bullets = this.bullets.filter(x => x.body.id !== bullet.body.id);
+            this.socketServer.emit('removeEntity', bullet.body.id);
+        }, 1000);
+    }
+
     getInitialGameState() {
         return {
             boxes: [
@@ -90,22 +118,20 @@ export class Engine {
         try {
             return {
                 boxes: [
-                    // ...this.boxes
-                    //     .filter(x => !x.isStatic)
-                    //     .map(x => {
-                    //         return {
-                    //             position: x.body.position,
-                    //             width: x.width,
-                    //             height: x.height,
-                    //             options: x.options,
-                    //             angle: x.body.angle,
-                    //             velocity: x.body.velocity,
-                    //             angularVelocity: x.body.angularVelocity,
-                    //             id: x.body.id,
-                    //             label: x.body.label,
-                    //             color: x.color
-                    //         };
-                    //     }),
+                    ...this.bullets.map(x => {
+                        return {
+                            position: x.body.position,
+                            width: x.width,
+                            height: x.height,
+                            options: x.options,
+                            angle: x.body.angle,
+                            velocity: x.body.velocity,
+                            angularVelocity: x.body.angularVelocity,
+                            id: x.body.id,
+                            label: x.body.label,
+                            color: x.color
+                        };
+                    }),
                     ...this.players.map(x => {
                         return {
                             position: x.box.body.position,
