@@ -8,6 +8,7 @@ import { JailGenerator } from './JailGenerator.js';
 export class Engine {
     constructor(socketServer) {
         this.socketServer = socketServer;
+        this.devToolsEnabled = true;
     }
 
     init() {
@@ -170,13 +171,34 @@ export class Engine {
         // randomly sort players into two teams
         this.gameState.players = this.gameState.players.sort(() => Math.random() - 0.5);
         this.gameState.players.forEach((x, i) => {
-            x.team = i % 2 === 0 ? 'red' : 'blue';
-            if (x.team === 'red') {
+            const t = i % 2;
+            if (t === 0) {
+                x.team = 'red';
                 x.color = '0xFF0000';
             } else {
+                x.team = 'blue';
                 x.color = '0x0000FF';
+                Matter.Body.setPosition(x.box.body, { x: 0, y: 0 });
             }
         });
+
+        const preGameFunc = (timerSeconds) => {
+            this.gameState.gameText = `Red team joins in ${timerSeconds} seconds`;
+            timerSeconds--;
+            if (timerSeconds >= 0) {
+                setTimeout(preGameFunc, 1000, timerSeconds);
+            } else {
+                this.gameState.gameText = 'Blue team: hide from the red team!';
+                this.gameState.players.forEach(x => {
+                    if (x.team === 'red') {
+                        Matter.Body.setPosition(x.box.body, { x: 0, y: 0 });
+                    }
+                });
+            }
+        }
+
+        const timer = 30;
+        setTimeout(preGameFunc, 1000, 3);
     }
 
     update() {
@@ -213,24 +235,22 @@ export class Engine {
                 player.socket.emit('winner');
             }
 
-            if (keys['3'] && !this.debounce) {
-                this.debounce = true;
-                // pick random cell from mazeGenerator.maze
-                const randX = Math.floor(Math.random() * this.mazeGenerator.width);
-                const randY = Math.floor(Math.random() * this.mazeGenerator.height);
-                const cell = this.mazeGenerator.maze[randX][randY];
-                let playerPos = new Point(cell.x * this.mazeGenerator.scale, cell.y * this.mazeGenerator.scale);
+            if (this.devToolsEnabled) {
+                if (keys['3'] && !this.debounce) {
+                    this.debounce = true;
+                    // pick random cell from mazeGenerator.maze
+                    const randX = Math.floor(Math.random() * this.mazeGenerator.width);
+                    const randY = Math.floor(Math.random() * this.mazeGenerator.height);
+                    const cell = this.mazeGenerator.maze[randX][randY];
+                    let playerPos = new Point(cell.x * this.mazeGenerator.scale, cell.y * this.mazeGenerator.scale);
+                    Matter.Body.setPosition(player.box.body, playerPos);
+                } else if (!keys['3']) {
+                    this.debounce = false;
+                }
 
-                playerPos = new Point(25, 25);
-                Matter.Body.setPosition(player.box.body, playerPos);
-            }
-
-            if (!keys['3']) {
-                this.debounce = false;
-            }
-
-            if (keys['r']) {
-                this.clearGameSettings();
+                if (keys['r']) {
+                    this.clearGameSettings();
+                }
             }
         }
     }
