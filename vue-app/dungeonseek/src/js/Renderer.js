@@ -20,7 +20,7 @@ export class Renderer {
         this.startTime = Date.now();
         document.getElementById('gameContainer').appendChild(this.app.view);
 
-        this.camera = new Camera(0, 0, 1);
+        this.camera = new Camera(0, 0, this.width, this.height, 1);
         this.camera.container.position = new PIXI.Point(0, 0);
         this.app.stage.addChild(this.camera.container);
 

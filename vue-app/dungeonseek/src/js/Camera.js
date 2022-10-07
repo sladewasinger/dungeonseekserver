@@ -1,19 +1,32 @@
 import * as PIXI from 'pixi.js';
 
 export class Camera {
-    constructor(x = 0, y = 0, scale = 4) {
+    constructor(x = 0, y = 0, width, height, scale = 4) {
         this.x = x;
         this.y = y;
+        this.width = width;
+        this.height = height;
         this.scale = scale;
         this.container = new PIXI.Container();
-        // set camera mask
-        this.mask = new PIXI.Graphics();
-        this.mask.beginFill(0x000000);
-        this.mask.drawRect(0, 0, 800, 600);
-        this.mask.endFill();
-        this.container.addChild(this.mask);
-        this.container.mask = this.mask;
 
+        // draw black square in container
+        const whiteBox = new PIXI.Graphics();
+        whiteBox.beginFill('0xffffff');
+        whiteBox.drawRect(0, 0, this.width, this.height);
+        whiteBox.endFill();
+        whiteBox.alpha = 1;
+        this.container.addChild(whiteBox);
+        this.whiteBox = whiteBox;
+
+        // create circle mask
+        const mask = new PIXI.Graphics();
+        mask.beginFill(0xffffff);
+        mask.drawCircle(width / 2, height / 2, this.width / 5);
+        mask.endFill();
+        mask.pivot = new PIXI.Point(this.x, this.y);
+        mask.position = new PIXI.Point(this.x, this.y);
+
+        this.container.mask = mask;
     }
 
     setPosition(x, y) {
@@ -21,5 +34,6 @@ export class Camera {
         this.y = y;
         this.container.pivot = new PIXI.Point(this.x, this.y);
         this.container.mask.position = new PIXI.Point(this.x, this.y);
+        this.whiteBox.position = new PIXI.Point(this.x, this.y);
     }
 }

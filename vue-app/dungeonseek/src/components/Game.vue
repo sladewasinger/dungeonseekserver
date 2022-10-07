@@ -1,6 +1,4 @@
 <template>
-  <h1 v-if="winner">You found it! You won!</h1>
-  <h1 v-if="!winner">Find the purple box!</h1>
   <div id="gameContainer"></div>
 </template>
 
@@ -32,5 +30,10 @@ export default {
   /* pointer-events: none; */
   image-rendering: pixelated;
   text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
 }
 </style>
