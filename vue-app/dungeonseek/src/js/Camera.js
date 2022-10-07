@@ -8,6 +8,7 @@ export class Camera {
         this.height = height;
         this.scale = scale;
         this.container = new PIXI.Container();
+        this.maskRadius = 150;
 
         // draw black square in container
         const whiteBox = new PIXI.Graphics();
@@ -21,7 +22,7 @@ export class Camera {
         // create circle mask
         const mask = new PIXI.Graphics();
         mask.beginFill(0xffffff);
-        mask.drawCircle(width / 2, height / 2, this.width / 5);
+        mask.drawCircle(width / 2, height / 2, this.maskRadius);
         mask.endFill();
         mask.pivot = new PIXI.Point(this.x, this.y);
         mask.position = new PIXI.Point(this.x, this.y);
@@ -35,5 +36,16 @@ export class Camera {
         this.container.pivot = new PIXI.Point(this.x, this.y);
         this.container.mask.position = new PIXI.Point(this.x, this.y);
         this.whiteBox.position = new PIXI.Point(this.x, this.y);
+    }
+
+    setMaskRadius(radius) {
+        if (radius < 0) {
+            radius = 0;
+        }
+        this.maskRadius = radius;
+        this.container.mask.clear();
+        this.container.mask.beginFill(0xffffff);
+        this.container.mask.drawCircle(this.width / 2, this.height / 2, this.maskRadius);
+        this.container.mask.endFill();
     }
 }

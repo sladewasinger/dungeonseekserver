@@ -31,6 +31,12 @@ export class Renderer {
                 e.preventDefault();
             }
         });
+
+        const text = new PIXI.Text('Waiting for more players to join.............', { fontFamily: 'Arial', fontSize: 24, fill: 0xff1010, align: 'center' });
+        text.position.x = this.width / 2;
+        text.pivot.x = text.width / 2;
+        this.app.stage.addChild(text);
+        this.text = text;
     }
 
     update(matterEngine, playerId) {
@@ -48,6 +54,8 @@ export class Renderer {
                 rect.rotation = body.angle;
                 if (rect.id === playerId) {
                     this.drawGun(rect);
+
+                    this.text.text = `Player ${rect.position.x.toFixed(0)}, ${rect.position.y.toFixed(0)}`;
                 }
             }
         }

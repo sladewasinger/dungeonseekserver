@@ -29,16 +29,13 @@ export class MatterEngine {
                     Composite.add(this.engine.world, body);
                 } else {
                     // ease body to box position
+                    var lerpScale = 0.2;
+                    const pos = { x: body.position.x + (box.position.x - body.position.x) * lerpScale, y: body.position.y + (box.position.y - body.position.y) * lerpScale };
 
-                    var lerpScale = 0.1;
-                    var pos = { x: body.position.x + (box.position.x - body.position.x) * lerpScale, y: body.position.y + (box.position.y - body.position.y) * lerpScale };
-                    const isStatic = body.isStatic;
-                    body.isStatic = true;
                     Body.setPosition(body, pos);
                     Body.setAngle(body, box.angle);
                     Body.setVelocity(body, box.velocity);
                     Body.setAngularVelocity(body, box.angularVelocity);
-                    body.isStatic = isStatic;
                 }
             }
         }

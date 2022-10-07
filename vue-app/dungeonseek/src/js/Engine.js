@@ -5,6 +5,7 @@ import * as PIXIMath from '@pixi/math';
 
 export class Engine {
     constructor(winnerCallbac) {
+        this.devToolsEnabled = true;
         this.matterEngine = new MatterEngine();
         this.socketUrl = undefined;
         if (process.env.NODE_ENV == 'local') {
@@ -103,6 +104,15 @@ export class Engine {
 
             if (!this.renderer.mouse.leftDown) {
                 this.canShoot = true;
+            }
+        }
+
+        if (this.devToolsEnabled) {
+            if (this.keys['2']) {
+                this.renderer.camera.setMaskRadius(this.renderer.camera.maskRadius + 5);
+            }
+            if (this.keys['1']) {
+                this.renderer.camera.setMaskRadius(this.renderer.camera.maskRadius - 5);
             }
         }
     }
