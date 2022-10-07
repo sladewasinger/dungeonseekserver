@@ -225,8 +225,14 @@ export class Engine {
             if (keys['a']) vel.x -= 1;
             if (keys['d']) vel.x += 1;
 
-            vel.x *= 3;
-            vel.y *= 3;
+            let speed = 3;
+
+            if (player.team == 'blue') {
+                speed = 2;
+            }
+
+            vel.x *= speed;
+            vel.y *= speed;
 
             Matter.Body.setVelocity(box.body, vel);
 

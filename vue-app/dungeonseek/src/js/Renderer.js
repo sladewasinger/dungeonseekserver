@@ -68,12 +68,11 @@ export class Renderer {
 
                 if (body.color !== body.prevColor) {
                     rect.clear();
-                    if (body.color) {
-                        rect.beginFill(body.color);
-                    } else if (body.id == playerId) {
-                        rect.beginFill('0xFF0055');
+                    rect.beginFill(body.color);
+                    if (body.id === playerId) {
+                        rect.lineStyle(2, 0x00FF00, 1);
                     } else {
-                        rect.beginFill("0x000000");
+                        rect.lineStyle(0);
                     }
                     rect.drawRect(body.position.x, body.position.y, body.width, body.height);
                     rect.endFill();
@@ -93,6 +92,7 @@ export class Renderer {
                 if (!body.color) {
                     body.color = 0x000000;
                 }
+
                 rect.beginFill(body.color);
                 rect.drawRect(body.position.x, body.position.y, body.width, body.height);
                 rect.endFill();

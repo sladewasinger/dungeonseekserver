@@ -44,6 +44,7 @@ export class MatterEngine {
                     Body.setAngularVelocity(body, player.angularVelocity);
                 }
             }
+            gameState.boxes = gameState.boxes || [];
             for (var box of gameState.boxes) {
                 var body = this.engine.world.bodies.find(x => x.id === box.id);
                 if (!body) {
@@ -80,8 +81,9 @@ export class MatterEngine {
     update(delta, gameState, keys, playerId) {
         Engine.update(this.engine, delta);
 
-        let player = this.engine.world.bodies.find(x => x.id === playerId);
-        if (player) {
+        let playerBody = this.engine.world.bodies.find(x => x.id === playerId);
+        let player = gameState.players.find(x => x.id === playerId);
+        if (playerBody) {
             const vel = { x: 0, y: 0 };
 
             if (keys['w']) vel.y -= 1;
@@ -89,10 +91,16 @@ export class MatterEngine {
             if (keys['a']) vel.x -= 1;
             if (keys['d']) vel.x += 1;
 
-            vel.x *= 3;
-            vel.y *= 3;
+            let speed = 3;
 
-            Matter.Body.setVelocity(player, vel);
+            if (player.team == 'blue') {
+                speed = 2;
+            }
+
+            vel.x *= speed;
+            vel.y *= speed;
+
+            Matter.Body.setVelocity(playerBody, vel);
         }
     }
 }

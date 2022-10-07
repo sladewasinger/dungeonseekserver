@@ -102,12 +102,16 @@ export class Engine {
         this.matterEngine.update(delta, this.gameState, this.keys, this.socket.id);
         this.renderer.update(this.matterEngine, this.socket.id);
 
-        let player = this.matterEngine.engine.world.bodies.find(x => x.id === this.socket.id);
-        if (player) {
+        let player = this.gameState.players.find(p => p.id == this.socket.id);
+        let playerBody = this.matterEngine.engine.world.bodies.find(x => x.id === this.socket.id);
+        if (playerBody) {
+            if (player?.team == 'red') {
+                this.renderer.camera.setMaskRadius(200);
+            }
             // slowly move camera to player position
             this.renderer.camera.setPosition(
-                this.renderer.camera.x + (player.position.x - this.renderer.width / 2 - this.renderer.camera.x) * 0.1,
-                this.renderer.camera.y + (player.position.y - this.renderer.height / 2 - this.renderer.camera.y) * 0.1
+                this.renderer.camera.x + (playerBody.position.x - this.renderer.width / 2 - this.renderer.camera.x) * 0.1,
+                this.renderer.camera.y + (playerBody.position.y - this.renderer.height / 2 - this.renderer.camera.y) * 0.1
             );
 
             if (this.renderer.mouse.leftDown && this.canShoot) {
