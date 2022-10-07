@@ -51,8 +51,8 @@ class Server {
                 this.engine.keyUp(socket.id, key);
             });
 
-            socket.on("shoot", (angle) => {
-                this.engine.shoot(socket.id, angle);
+            socket.on('clearKeys', () => {
+                this.engine.clearKeys(socket.id);
             });
 
             socket.emit('initialGameState', this.engine.getInitialGameState());
@@ -62,7 +62,7 @@ class Server {
     }
 
     clientUpdateLoop() {
-        this.socketServer.volatile.emit('gameState', this.engine.getGameState());
+        this.socketServer.volatile.emit('gameState', this.engine.getClientGameState());
     }
 }
 

@@ -19,6 +19,31 @@ export class MatterEngine {
 
     onGameStateUpdated(gameState) {
         try {
+            for (var player of gameState.players) {
+                const body = this.engine.world.bodies.find(x => x.id === player.id);
+                if (!body) {
+                    const body = Bodies.rectangle(player.position.x, player.position.y, player.width, player.height, { ...player.options, id: player.id });
+                    body.width = player.width;
+                    body.height = player.height;
+                    body.color = player.color;
+                    Composite.add(this.engine.world, body);
+                } else {
+                    const lerpScale = 0.2;
+                    let pos = { x: body.position.x + (player.position.x - body.position.x) * lerpScale, y: body.position.y + (player.position.y - body.position.y) * lerpScale };
+
+                    const dist = Math.sqrt(Math.pow(body.position.x - player.position.x, 2) + Math.pow(body.position.y - player.position.y, 2));
+                    if (dist > player.width * 2) {
+                        pos = { x: player.position.x, y: player.position.y };
+                    }
+
+                    body.color = player.color;
+
+                    Body.setPosition(body, pos);
+                    Body.setAngle(body, player.angle);
+                    Body.setVelocity(body, player.velocity);
+                    Body.setAngularVelocity(body, player.angularVelocity);
+                }
+            }
             for (var box of gameState.boxes) {
                 var body = this.engine.world.bodies.find(x => x.id === box.id);
                 if (!body) {
@@ -29,8 +54,16 @@ export class MatterEngine {
                     Composite.add(this.engine.world, body);
                 } else {
                     // ease body to box position
-                    var lerpScale = 0.2;
-                    const pos = { x: body.position.x + (box.position.x - body.position.x) * lerpScale, y: body.position.y + (box.position.y - body.position.y) * lerpScale };
+                    const lerpScale = 0.2;
+                    // distance between body and box
+                    const dist = Math.sqrt(Math.pow(body.position.x - box.position.x, 2) + Math.pow(body.position.y - box.position.y, 2));
+                    let pos = { x: body.position.x + (box.position.x - body.position.x) * lerpScale, y: body.position.y + (box.position.y - body.position.y) * lerpScale };
+
+                    if (dist > box.width * 2) {
+                        pos = { x: box.position.x, y: box.position.y };
+                    }
+
+                    body.color = box.color;
 
                     Body.setPosition(body, pos);
                     Body.setAngle(body, box.angle);

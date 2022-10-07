@@ -1,17 +1,6 @@
+import { Cell } from './Cell.js';
 import { Point } from './Point.js';
 import { Rectangle } from './Rectangle.js';
-
-export class Cell {
-    constructor(x, y) {
-        this.x = x;
-        this.y = y;
-        this.northWall = true;
-        this.westWall = true
-        this.southWall = true;
-        this.eastWall = true;
-        this.visited = false;
-    }
-}
 
 export class MazeGenerator {
     constructor(width, height, scale, wallThickness) {
@@ -58,8 +47,9 @@ export class MazeGenerator {
         this.removeRandomWalls();
         this.closeOuterWalls();
     }
+
     removeRandomWalls() {
-        const threshold = 0.2;
+        const threshold = 0.5;
         for (let i = 0; i < this.width; i++) {
             for (let j = 0; j < this.height; j++) {
                 if (Math.random() < threshold) {
@@ -77,23 +67,14 @@ export class MazeGenerator {
             }
         }
     }
+
     wallsAsBoxes() {
         const boxes = [];
         for (let i = 0; i < this.width; i++) {
             for (let j = 0; j < this.height; j++) {
                 const cell = this.maze[i][j];
-                if (cell.northWall) {
-                    boxes.push(new Rectangle(cell.x * this.scale, cell.y * this.scale - this.scale / 2, this.scale, this.wallThickness, { isStatic: true }));
-                }
-                if (cell.westWall) {
-                    boxes.push(new Rectangle(cell.x * this.scale - this.scale / 2, cell.y * this.scale, this.wallThickness, this.scale, { isStatic: true }));
-                }
-                if (cell.southWall) {
-                    boxes.push(new Rectangle(cell.x * this.scale, cell.y * this.scale + this.scale - this.scale / 2, this.scale, this.wallThickness, { isStatic: true }));
-                }
-                if (cell.eastWall) {
-                    boxes.push(new Rectangle(cell.x * this.scale + this.scale - this.scale / 2, cell.y * this.scale, this.wallThickness, this.scale, { isStatic: true }));
-                }
+                const tempBoxes = cell.wallsAsBoxes(this.scale, this.wallThickness);
+                boxes.push(...tempBoxes);
             }
         }
         return boxes;

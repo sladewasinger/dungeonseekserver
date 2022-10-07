@@ -21,14 +21,21 @@ export class Engine {
 
         window.addEventListener('keydown', e => this.keyDown(e));
         window.addEventListener('keyup', e => this.keyUp(e));
+        window.addEventListener('blur', e => this.clearKeys(e));
+        window.oncontextmenu = this.clearKeys.bind(this);
 
         this.socket.on("connect", () => {
             console.log(this.socket.id);
+        });
+        this.socket.on("disconnect", () => {
+            console.log("Disconnect!");
+            window.location.reload();
         });
         this.socket.on('ping', () => console.log('ping'));
         this.socket.on('gameState', (gs) => {
             try {
                 this.gameState = gs;
+                this.renderer.setText(gs.text);
                 this.matterEngine.onGameStateUpdated(this.gameState);
             } catch (e) {
                 console.log(e);
@@ -47,7 +54,10 @@ export class Engine {
         this.socket.on('playerLeft', (id) => {
             console.log("playerLeft", id);
             // hacky, but this should work:
-            setTimeout(() => this.renderer.removeById(id), 1000);
+            setTimeout(() => {
+                this.renderer.removeById(id);
+                this.matterEngine.removeById(id);
+            }, 1000);
         });
         this.socket.on('winner', () => {
             winnerCallbac();
@@ -56,18 +66,28 @@ export class Engine {
             this.renderer.removeById(id);
             this.matterEngine.removeById(id);
         });
+        this.socket.on('setText', (text) => {
+            this.renderer.setText(text);
+        });
 
         this.renderer = new Renderer(800, 600);
     }
 
+    clearKeys(e) {
+        this.keys = {};
+        this.socket.emit('clearKeys');
+    }
+
     keyDown(e) {
-        this.socket.emit('keydown', e.key);
-        this.keys[e.key] = true;
+        const key = e.key.toLowerCase();
+        this.socket.emit('keydown', key);
+        this.keys[key] = true;
     }
 
     keyUp(e) {
-        this.socket.emit('keyup', e.key);
-        this.keys[e.key] = false;
+        const key = e.key.toLowerCase();
+        this.socket.emit('keyup', key);
+        this.keys[key] = false;
     }
 
     init() {
