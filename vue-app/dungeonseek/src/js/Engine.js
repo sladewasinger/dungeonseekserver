@@ -70,7 +70,7 @@ export class Engine {
             this.renderer.setText(text);
         });
 
-        this.renderer = new Renderer(800, 600);
+        this.renderer = new Renderer(800, 800);
     }
 
     clearKeys(e) {
@@ -104,9 +104,9 @@ export class Engine {
 
         let player = this.gameState.players.find(p => p.id == this.socket.id);
         let playerBody = this.matterEngine.engine.world.bodies.find(x => x.id === this.socket.id);
-        if (playerBody) {
+        if (playerBody && player) {
             if (player?.team == 'red') {
-                this.renderer.camera.setMaskRadius(200);
+                this.renderer.camera.setMaskRadius(175);
             }
             // slowly move camera to player position
             this.renderer.camera.setPosition(

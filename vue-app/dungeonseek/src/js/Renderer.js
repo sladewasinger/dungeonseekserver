@@ -32,7 +32,7 @@ export class Renderer {
             }
         });
 
-        const text = new PIXI.Text('Waiting for more players to join...', {
+        const text = new PIXI.Text('<default text>', {
             fontFamily: 'Arial',
             fontSize: 24,
             dropShadow: true,

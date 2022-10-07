@@ -8,7 +8,7 @@ export class Camera {
         this.height = height;
         this.scale = scale;
         this.container = new PIXI.Container();
-        this.maskRadius = this.width / 3;
+        this.maskRadius = 250;
 
         // draw white square behind everything
         const whiteBox = new PIXI.Graphics();

@@ -182,23 +182,34 @@ export class Engine {
             }
         });
 
+        const gameFunc = (timerSeconds) => {
+            timerSeconds--;
+            if (timerSeconds <= 0 || this.gameState.players.filter(x => x.team === 'red').length === 0 || this.gameState.players.filter(x => x.team === 'blue').length === 0) {
+                this.gameState.gameText = "Blue Team Wins!";
+                setTimeout(() => this.clearGameSettings(), 5000);
+            } else {
+                this.gameState.gameText = `${timerSeconds}s - Blue team: hide from the red team!\nRed team: tag the blue team!`;
+                setTimeout(() => gameFunc(timerSeconds), 1000);
+            }
+        }
+
         const preGameFunc = (timerSeconds) => {
             this.gameState.gameText = `Red team joins in ${timerSeconds} seconds`;
             timerSeconds--;
             if (timerSeconds >= 0) {
                 setTimeout(preGameFunc, 1000, timerSeconds);
             } else {
-                this.gameState.gameText = 'Blue team: hide from the red team!';
                 this.gameState.players.forEach(x => {
                     if (x.team === 'red') {
                         Matter.Body.setPosition(x.box.body, { x: 0, y: 0 });
                     }
                 });
+                gameFunc(120);
             }
         }
 
         const timer = 30;
-        setTimeout(preGameFunc, 1000, 3);
+        setTimeout(preGameFunc, 1000, 20);
     }
 
     update() {
@@ -213,6 +224,24 @@ export class Engine {
 
         if (this.gameState.players.length < 1 && this.gameState.gameStarted) {
             this.clearGameSettings();
+        }
+
+        if (this.gameState.gameStarted) {
+            const redPlayers = this.gameState.players.filter(x => x.team === 'red');
+            const bluePlayers = this.gameState.players.filter(x => x.team === 'blue');
+
+            bluePlayers.forEach(x => {
+                if (Matter.Query.collides(x.box.body, redPlayers.map(x => x.box.body)).length > 0) {
+                    console.log('blue player tagged');
+                    x.color = '0xFF0055';
+                    x.team = 'red';
+                }
+            });
+
+            if (bluePlayers.length < 1) {
+                this.gameState.gameText = 'Red team wins!';
+                setTimeout(() => this.clearGameSettings(), 5000);
+            }
         }
 
         for (const player of this.gameState.players) {
